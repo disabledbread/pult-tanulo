@@ -1,0 +1,4 @@
+# local Claude / editor settings
+.claude/
+Thumbs.db
+desktop.ini

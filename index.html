@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MA2 Tanuló</title>
+<meta name="description" content="Interaktív grandMA2 onPC tanfolyam magyarul – a hivatalos Quick Start Guide alapján, lépésről lépésre.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/theme-modern.css">
+<link rel="stylesheet" href="assets/css/resume.css">
+<script>try { var t = localStorage.getItem('ma2tanulo:theme'); if (t === 'modern') document.documentElement.setAttribute('data-theme', 'modern'); } catch (e) {}</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Cpath d='M14 46V18l18 16 18-16v28' fill='none' stroke='%23ffcc00' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#app">Ugrás a tartalomra</a>
+
+<header class="gnav" id="gnav">
+  <nav class="gnav-inner" aria-label="Fő navigáció">
+    <a class="brand" href="#/" aria-label="MA2 Tanuló – főoldal">
+      <svg viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><path d="M14 46V18l18 16 18-16v28" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>MA2 Tanuló</span>
+    </a>
+    <ul class="gnav-links" id="gnavLinks">
+      <li><a href="#/tanfolyam" data-nav="tanfolyam">Tanfolyam</a></li>
+      <li><a href="#/temak" data-nav="temak">Témakörök</a></li>
+      <li><a href="#/billentyuk" data-nav="billentyuk">Billentyűk</a></li>
+      <li><a href="#/szotar" data-nav="szotar">Szótár</a></li>
+    </ul>
+    <div class="gnav-right">
+      <a class="nav-resume" href="#/folytatas" title="Honnan folytatod?"><span>Folytatás</span><small id="navResumeWhere"></small></a>
+      <div class="theme-switch" role="group" aria-label="Megjelenés">
+        <button type="button" data-theme-set="ma2" aria-pressed="true">MA2</button>
+        <button type="button" data-theme-set="modern" aria-pressed="false">Modern</button>
+      </div>
+      <a class="gnav-progress" href="#/tanfolyam" id="navProgress" aria-label="Haladás">
+        <svg viewBox="0 0 36 36" width="22" height="22" aria-hidden="true"><circle cx="18" cy="18" r="15" class="ring-bg"/><circle cx="18" cy="18" r="15" class="ring-fg" id="navRing"/></svg>
+        <span id="navPct">0%</span>
+      </a>
+      <button class="gnav-menu" id="menuBtn" aria-label="Menü" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-note">Ez egy nem hivatalos, magyar nyelvű tanulósegéd a <a href="https://help.malighting.com/grandMA2/en/help/grandma2_quick_start_guide/key_qsg_welcome.html" target="_blank" rel="noopener">grandMA2 Quick Start Guide</a> alapján (v3.9). A grandMA2 és az MA Lighting az MA Lighting Technology GmbH védjegyei.</p>
+    <div class="footer-row">
+      <span>MA2 Tanuló</span>
+      <button class="link-btn" id="resetBtn">Haladás törlése</button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/figures.js"></script>
+<script src="assets/js/data/shortcuts.js"></script>
+<script src="assets/js/data/glossary.js"></script>
+<script src="assets/js/data/lessons/00.js"></script>
+<script src="assets/js/data/lessons/01.js"></script>
+<script src="assets/js/data/lessons/02.js"></script>
+<script src="assets/js/data/lessons/03.js"></script>
+<script src="assets/js/data/lessons/04.js"></script>
+<script src="assets/js/data/lessons/05.js"></script>
+<script src="assets/js/data/lessons/06.js"></script>
+<script src="assets/js/data/lessons/07.js"></script>
+<script src="assets/js/data/lessons/08.js"></script>
+<script src="assets/js/data/lessons/09.js"></script>
+<script src="assets/js/data/lessons/10.js"></script>
+<script src="assets/js/data/lessons/11.js"></script>
+<script src="assets/js/data/lessons/12.js"></script>
+<script src="assets/js/data/lessons/13.js"></script>
+<script src="assets/js/data/lessons/14.js"></script>
+<script src="assets/js/data/topics.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
