@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/theme-modern.css">
 <link rel="stylesheet" href="assets/css/resume.css">
+<link rel="stylesheet" href="assets/css/accounts.css">
 <script>try { var t = localStorage.getItem('ma2tanulo:theme'); if (t === 'modern') document.documentElement.setAttribute('data-theme', 'modern'); } catch (e) {}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Cpath d='M14 46V18l18 16 18-16v28' fill='none' stroke='%23ffcc00' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 </head>
@@ -29,9 +30,11 @@
       <li><a href="#/temak" data-nav="temak">Témakörök</a></li>
       <li><a href="#/billentyuk" data-nav="billentyuk">Billentyűk</a></li>
       <li><a href="#/szotar" data-nav="szotar">Szótár</a></li>
+      <li><a href="#/vizsga" data-nav="vizsga">Vizsga</a></li>
     </ul>
     <div class="gnav-right">
       <a class="nav-resume" href="#/folytatas" title="Honnan folytatod?"><span>Folytatás</span><small id="navResumeWhere"></small></a>
+      <a class="nav-user" id="navUser" href="#/profil" hidden></a>
       <div class="theme-switch" role="group" aria-label="Megjelenés">
         <button type="button" data-theme-set="ma2" aria-pressed="true">MA2</button>
         <button type="button" data-theme-set="modern" aria-pressed="false">Modern</button>
@@ -54,7 +57,7 @@
     <p class="footer-note">Ez egy nem hivatalos, magyar nyelvű tanulósegéd a <a href="https://help.malighting.com/grandMA2/en/help/grandma2_quick_start_guide/key_qsg_welcome.html" target="_blank" rel="noopener">grandMA2 Quick Start Guide</a> alapján (v3.9). A grandMA2 és az MA Lighting az MA Lighting Technology GmbH védjegyei.</p>
     <div class="footer-row">
       <span>MA2 Tanuló</span>
-      <button class="link-btn" id="resetBtn">Haladás törlése</button>
+      <span><a class="link-btn" href="#/admin">Admin</a> · <button class="link-btn" id="resetBtn">Haladás törlése</button></span>
     </div>
   </div>
 </footer>
@@ -79,6 +82,11 @@
 <script src="assets/js/data/lessons/13.js"></script>
 <script src="assets/js/data/lessons/14.js"></script>
 <script src="assets/js/data/topics.js"></script>
+<script src="assets/js/data/exam.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/cloud.js"></script>
+<script src="assets/js/accounts.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

@@ -394,6 +394,7 @@
     $('#navRing').style.strokeDashoffset = String(94.25 * (1 - pct));
     const w = where(), wl = $('#navResumeWhere');
     if (wl) wl.textContent = w && w.saved ? `${w.l.id}${w.st ? ' · ' + w.st.n + '.' : ''}` : '';
+    if (typeof MA.onNav === 'function') MA.onNav();
   };
 
   const revealAll = () => {
@@ -463,13 +464,16 @@
     else if (sec === 'billentyuk') shortcuts();
     else if (sec === 'szotar') glossary(q);
     else if (sec === 'folytatas') resumePage();
+    else if (MA.routes && MA.routes[sec]) MA.routes[sec]({ app, parts, q });
     else notFound();
-    document.title = ({ '': 'MA2 Tanuló', tanfolyam: 'Tanfolyam · MA2 Tanuló', temak: 'Témakörök · MA2 Tanuló', billentyuk: 'Billentyűk · MA2 Tanuló', szotar: 'Szótár · MA2 Tanuló', folytatas: 'Folytatás · MA2 Tanuló' })[sec] || (MA.byId[parts[1]] ? `${MA.byId[parts[1]].id} ${MA.byId[parts[1]].title} · MA2 Tanuló` : 'MA2 Tanuló');
+    document.title = ({ '': 'MA2 Tanuló', tanfolyam: 'Tanfolyam · MA2 Tanuló', temak: 'Témakörök · MA2 Tanuló', billentyuk: 'Billentyűk · MA2 Tanuló', szotar: 'Szótár · MA2 Tanuló', folytatas: 'Folytatás · MA2 Tanuló', vizsga: 'Záróvizsga · MA2 Tanuló', profil: 'Profil · MA2 Tanuló', admin: 'Admin · MA2 Tanuló' })[sec] || (MA.byId[parts[1]] ? `${MA.byId[parts[1]].id} ${MA.byId[parts[1]].title} · MA2 Tanuló` : 'MA2 Tanuló');
     if (path !== lastPath && !q.s && !q.t) window.scrollTo(0, 0);
     lastPath = path;
+    if (typeof MA.afterRoute === 'function') MA.afterRoute(sec);
     updateNav();
     revealAll();
   };
+  MA.ui = { cmdbar, toast, md, esc, icon, lessons, stepList, plain, partName, route: () => { lastPath = null; route(); }, updateNav: () => updateNav() };
   window.addEventListener('hashchange', route);
   route();
   MA._route = route;

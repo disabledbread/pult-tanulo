@@ -64,7 +64,11 @@
   const KEY = 'ma2tanulo:v1';
   let state = { steps: {}, quiz: {}, done: {}, last: null };
   try { const raw = localStorage.getItem(KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch (e) { /* private mode */ }
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } };
+  const save = () => {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    if (typeof MA.onSave === 'function') MA.onSave(); // cloud sync (cloud.js)
+  };
+  const blank = () => ({ steps: {}, quiz: {}, done: {}, last: null, pos: null });
 
   MA.store = {
     get state() { return state; },
@@ -77,8 +81,28 @@
     setLast(lid) { state.last = lid; save(); },
     pos() { return state.pos || null; },
     setPos(lid, sid) { state.pos = { l: lid, s: sid, t: Date.now() }; state.last = lid; save(); },
-    reset() { state = { steps: {}, quiz: {}, done: {}, last: null, pos: null }; save(); }
+    reset() { state = blank(); save(); },
+    /* replace local progress with another state (e.g. from the server) */
+    replace(next) { state = Object.assign(blank(), next || {}); try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } },
+    /* merge server progress into local: union of ticks, newest position wins */
+    merge(remote) {
+      if (!remote) return;
+      ['steps', 'quiz', 'done'].forEach((k) => { state[k] = Object.assign({}, remote[k] || {}, state[k] || {}); });
+      const rp = remote.pos, lp = state.pos;
+      if (rp && (!lp || (rp.t || 0) > (lp.t || 0))) { state.pos = rp; state.last = remote.last || rp.l; }
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    }
   };
+
+  /* progress of any saved state (used by the admin page) */
+  MA.progressOf = (st, lesson) => {
+    const ids = MA.stepIds(lesson);
+    const steps = (st && st.steps) || {};
+    const n = ids.filter((id) => steps[lesson.id + ':' + id]).length;
+    const done = st && st.done && st.done[lesson.id];
+    return { n, total: ids.length, pct: done ? 1 : ids.length ? n / ids.length : 0 };
+  };
+  MA.totalOf = (st) => MA.lessons.length ? MA.lessons.reduce((a, l) => a + MA.progressOf(st, l).pct, 0) / MA.lessons.length : 0;
 
   /* Count steps of a lesson */
   MA.stepIds = (lesson) => lesson.blocks.filter((b) => b.t === 'step').map((b, i) => b.id || String(i + 1));
