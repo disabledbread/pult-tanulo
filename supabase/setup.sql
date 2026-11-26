@@ -43,6 +43,14 @@ alter table public.learners         enable row level security;
 alter table public.exam_submissions enable row level security;
 alter table public.admins           enable row level security;
 
+-- Explicit API permissions (the project does NOT auto-grant new tables).
+-- anon (learners, no login) gets NO table access: it only calls the functions below.
+-- authenticated (the admin login) gets table access, filtered by the RLS policies.
+revoke all on public.learners, public.exam_submissions, public.admins from anon;
+grant select, update, delete on public.learners         to authenticated;
+grant select, update, delete on public.exam_submissions to authenticated;
+grant select                 on public.admins           to authenticated;
+
 -- ---------- admin check ----------
 create or replace function public.is_admin() returns boolean
 language sql stable security definer set search_path = public as $$
@@ -120,6 +128,8 @@ begin
   returning id into new_id;
   return new_id;
 end $$;
+
+grant execute on function public.is_admin() to anon, authenticated;
 
 revoke all on function public.learner_load(text, text)                  from public;
 revoke all on function public.learner_save(text, jsonb, real, text)     from public;

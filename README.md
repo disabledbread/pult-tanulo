@@ -11,8 +11,17 @@ A lépéseket a **grandMA2 onPC**-ben kell megcsinálni — ez az oldal mellette
 - Valódi onPC képernyőképek (grandMA2 onPC 3.9.63)
 - Rövid kvízek, „A színházban” tippek
 - Témakörök (gyors receptek), Billentyűk, Szótár
-- Haladás mentése a böngészőben + „Folytatás” menü
+- Belépés csak névvel (jelszó/email nélkül): a haladás a szerverre mentődik, bármelyik gépről folytatható
+- „Folytatás” menü, Profil oldal
+- Záróvizsga: a tanuló feltölti a .show.gz fájlt, az oktató az oldalon ad visszajelzést (Elfogadva / Javítandó)
+- Admin oldal (lap alja → Admin): mindenki haladása %-ban, vizsgák letöltése és értékelése
 - Két megjelenés: MA2 (alap) és Modern
+
+## Szerver (Supabase)
+- A kapcsolat adatai: `assets/js/config.js` (csak a nyilvános *anon* kulcs — a service_role kulcs SOHA ne kerüljön ide).
+- Adatbázis-beállítás: `supabase/setup.sql` (egyszer kell lefuttatni a Supabase SQL Editorban).
+- Admin: Supabase → Authentication → Users → új felhasználó, majd felvétel az `admins` táblába (lásd a setup.sql végét).
+- A záróvizsga feladatlistája: `assets/js/data/exam.js`.
 
 ## Helyi futtatás
 Csak egy böngésző kell. Windows-on PowerShellben:
