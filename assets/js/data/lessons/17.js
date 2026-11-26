@@ -1,0 +1,41 @@
+MA.lesson({
+  id: '17', part: 'extra', title: 'Direkt kapcsoló fixture type', en: 'Non-dim channel (DMX Profile)', min: 25,
+  lead: 'Saját fixture type egy csak ki-be kapcsolható eszközre: 50% alatt 0, 50% fölött 100% megy ki. Ehhez egy DMX Profile-t (görbét) rajzolsz, és ráteszed a csatornára.',
+  learn: ['Mi a direkt kapcsoló (non-dim)', 'DMX Profile a Graph Editorban', 'Saját fixture type egy Dim csatornával', 'Patch új rétegbe', 'Ellenőrzés a DMX sheetben'],
+  blocks: [
+    { t: 'concept', tag: 'Alapfogalom', title: 'Mi az a direkt kapcsoló?', text: ['Vannak eszközök, amiket **nem szabad dimmelni**: csak égnek vagy nem égnek (pl. munkafény, gyakorlati lámpa, motor, ventilátor). Ha a pult 30%-ot küldene nekik, villoghatnak vagy tönkremehetnek.', 'Ezért csinálunk egy olyan típust, aminél **50% alatt 0**, **50%-tól 100%** megy ki. A pultban ezt egy **DMX Profile** (görbe) végzi: megmondja, melyik bemenő értékből milyen kimenő érték legyen.'] },
+    { t: 'h', text: '1. A görbe: DMX Profile' },
+    { t: 'step', title: 'Nyisd meg a DMX Profile-okat', keys: 'Setup', text: 'Setup → {{Patch & Fixture Schedule}}, majd jobb oldalt a {{DMX Profiles}} gomb.', see: 'A DMX Profiles lista („New” sorral).' },
+    { t: 'step', title: 'Új profil', text: 'Nyomd meg az {{Add}} gombot. Kattints az új **DMX_Profile 1** sorra, majd {{Edit}}.', see: 'Megnyílik a **Graph Editor**: egy egyenes vonal 0-tól 255-ig.' },
+    { t: 'step', title: 'Táblázat nézet', text: 'Jobb oldalt kattints a {{Table Mode}} gombra. Két pont van: (0, 0) és (255, 255).', mini: 'X = ami a pultból bejön (0–255), Y = ami kimegy. A 128 a fele (50%).' },
+    { t: 'step', title: 'A 2. pont: X = 128', text: 'Kattints a 2. pont **X** cellájára, írd be: `128`, Enter. (Az Y marad 255.)' },
+    { t: 'step', title: 'Harmadik pont', text: 'Nyomd meg az {{Add Point}} gombot. Az új pont **X** cellájába írd: `255`, az **Y** cellájába: `255`.', see: 'Három pont: (0, 0), (128, 255), (255, 255).' },
+    { t: 'step', title: 'Az 1. pont módja: Step (End)', text: 'Kattints az 1. pont **Mode** cellájára (Linear), és a listából válaszd: {{Step (End)}}.', shot: 'dk-modes', mini: 'A Step (End) azt jelenti: a pont értéke (0) marad a következő pontig, ott ugrik. A **Step (Start)** rögtön az elején ugrana — az nem jó!' },
+    { t: 'step', title: 'Ellenőrizd', text: 'Kattints a {{Graphic Mode}} gombra.', shot: 'dk-graph', see: 'A vonal 0-n halad 128-ig, ott **függőlegesen felugrik** 255-re.' },
+    { t: 'step', title: 'Nevezd el', text: 'Kattints a {{Label}} gombra, írd be: `Direkt kapcsolo`, Enter. Zárd be a Graph Editort és a DMX Profiles listát (sárga X).', shot: 'dk-table', see: 'A táblázatban: 1. pont Step (End), a többi Linear.' },
+    { t: 'h', text: '2. A típus: Fixture Type' },
+    { t: 'step', title: 'Új fixture type', text: 'Jobb oldalt kattints a {{Fixture Types}} gombra, majd {{Add}}. Név: `Direkt kapcsolo`, Enter.', shot: 'dk-fixture-types', see: 'Új sor a listában. A DMX Footprint még 0 — nincs csatornája.' },
+    { t: 'step', title: 'Csatorna hozzáadása', text: 'Jelöld ki a Direkt kapcsolo sort, és nyomd meg az {{Edit}} gombot. A csatornák ablakban {{Add}} → válaszd a {{Dim}} attribútumot.', see: 'Egy sor: **DIM (Dim)**.' },
+    { t: 'step', title: 'Coarse = 1', text: 'A **Coarse** cellába írd: `1`, Enter. Ez a csatorna DMX-címe a lámpán belül (az első és egyetlen).' },
+    { t: 'step', title: 'Profil a csatornára', text: 'Görgess jobbra a **Profile** oszlopig. Kattints a cellára (ha kell, jobb gombbal), és válaszd a **Direkt kapcsolo** profilt.', shot: 'dk-select-profile', see: 'A Profile cellában: **Direkt kapcsolo**.' },
+    { t: 'step', title: 'Kész a típus', text: 'Zárd be a csatornák ablakát és a Fixture Types listát (sárga X).', see: 'A Direkt kapcsolo DMX Footprint-ja most **1**.' },
+    { t: 'h', text: '3. Patch' },
+    { t: 'step', title: 'Új réteg: Kapcsolok', text: 'Bal oldalt a rétegeknél nyomd meg az {{Add Layer}} gombot (konzolon X1). Név: `Kapcsolok`, Enter.', see: 'Megnyílik a Fixture Wizard.' },
+    { t: 'step', title: 'Típus kiválasztása', text: 'Kattints a {{Please select fixturetype}} gombra, és válaszd a **Direkt kapcsolo** típust. (Előtte álló száma nálad más lehet.)', shot: 'dk-wizard' },
+    { t: 'step', title: 'Adatok', text: 'Name: `Kapcs 1` · Quantity: `1` · Fixture ID: `0` (nem kell) · Channel ID: `41` · Patch Break 1: `1.041`. Utána {{Apply}}.', mini: 'A 41-es csatorna és az 1.041-es cím szabad: a dimmerek 1–40-ig vannak.' },
+    { t: 'step', title: 'Mentés', text: 'Zárd be a patch-et (sárga X), a kérdésre {{Yes}}, majd a Setup menüt is zárd be.', shot: 'dk-patch', see: 'A Kapcsolok rétegben: Kapcs 1, ChaID 41, Patch 1.041.' },
+    { t: 'h', text: '4. Próba a DMX sheetben' },
+    { t: 'step', title: 'DMX ablak', text: 'Kattints egy üres képernyőterületre → {{Sheets}} fül → {{DMX}}.', see: 'A DMX címek táblázata (1: 1, 1: 21, 1: 41…).' },
+    { t: 'step', title: '40%: semmi', keys: '4 1 At 4 0 Please', text: 'A 41-es csatornát 40%-ra állítod.', cmd: 'Channel 41 At 40', shot: 'dk-dmx-40', see: 'Az **1: 41** cím üres — a kimenet **0**.' },
+    { t: 'step', title: '60%: teljes', keys: '4 1 At 6 0 Please', text: 'Most 60%-ra.', cmd: 'Channel 41 At 60', shot: 'dk-dmx-60', see: 'Az 1: 41 címen **100** — teljes kimenet.' },
+    { t: 'step', title: 'Takaríts', keys: 'Clear', text: 'Tartsd nyomva a Clear-t (vagy nyomd meg háromszor).', fb: 'Executing : ClearAll' },
+    { t: 'tip', kind: 'info', title: 'Úsztatásnál', text: 'Ha egy cue 0-ról 100%-ra úszik 10 mp alatt, a direkt kapcsoló kb. **5 mp-nél** kapcsol be — ott, ahol a fade átlépi az 50%-ot.' },
+    { t: 'tip', kind: 'theatre', title: 'A színházban', text: 'A színházi show fixture type-jaihoz és profiljaihoz **ne nyúlj** engedély nélkül. Új kapcsolót mindig saját rétegbe patchelj, és nézd meg a DMX sheetben, hogy tényleg csak 0 vagy 100 megy ki.' },
+    { t: 'checkpoint', items: ['Van egy „Direkt kapcsolo” DMX Profile: (0,0) Step (End), (128,255), (255,255).', 'A „Direkt kapcsolo” fixture type 1 csatornás, a Dim csatornán ez a profil.', 'Kapcs 1 a 41-es csatornán, 1.041-en; 40% → 0, 60% → 100.', 'A programmer üres.'] },
+    { t: 'quiz', items: [
+      { q: 'Mit csinál a direkt kapcsoló 30%-on?', a: ['Kimenet 0', 'Kimenet 30%', 'Kimenet 100%'], ok: 0, why: '50% alatt a profil 0-t küld ki.' },
+      { q: 'Melyik módot kapja az 1. pont?', a: ['Step (End)', 'Step (Start)', 'Linear'], ok: 0, why: 'A Step (End) a következő pontig 0-n tart, és csak 128-nál ugrik. A Step (Start) azonnal ugrana.' },
+      { q: 'Hol kapcsolod össze a profilt a csatornával?', a: ['A fixture type csatornáinál, a Profile oszlopban', 'A Fixture Wizardban', 'A DMX sheetben'], ok: 0, why: 'A profil a típus csatornájához tartozik, így minden ilyen típusú lámpán működik.' }
+    ] }
+  ]
+});

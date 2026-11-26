@@ -49,5 +49,10 @@
   g('Rate', 'sebesség-szorzó', 'Rate faderrel a cue-idők gyorsíthatók/lassíthatók anélkül, hogy a tárolt idők változnának.', ['14']);
   g('MAtricks', 'kijelölés-trükkök', 'Eszköz, amivel egy kijelölést szétbontasz: pl. minden második lámpa, blokkok, szárnyak (tükrözés középről). Effekteknél nagyon hasznos.', []);
   g('Layout View', 'színpadkép nézet', 'Ablak, ahol a lámpák a valós elhelyezésük szerint látszanak, és rájuk kattintva kijelölheted őket.', []);
+  g('Effect', 'effekt', 'Magától ismétlődő változás: futófény, kör, színváltás. Az Effect Editorban rakod össze, az Effects poolba kerül, és cue-ba tárolható.', ['15']);
+  g('Effect Editor', 'effekt-szerkesztő', 'Itt építed fel az effektet: Add → attribútum (pl. Dim, Position, MixColor), majd Form (Chase, Sin, Cos…), Speed, Low/High, Phase.', ['15']);
+  g('Stomp', 'effekt leállítása', 'Leállítja a futó effektet a kijelölt lámpákon. Gombokkal: MA + At, majd Please. Cue-ba tárolva a következő jelben állítja le az effektet.', ['15']);
+  g('Offset', 'eltolás', 'A patch-ben a Pan Offset / Tilt Offset ennyivel eltolja a lámpa kimenetét. Lámpacsere után így javítod az összes pozíciót egyszerre.', ['16']);
+  g('DMX Profile', 'kimeneti görbe', 'Megmondja, melyik bemenő értékből milyen DMX érték menjen ki. A fixture type csatornájára teszed (Profile oszlop). Pl. direkt kapcsoló: 50% alatt 0, fölötte 100.', ['17']);
   window.MA.glossary.sort((a, b) => a.term.localeCompare(b.term));
 })();

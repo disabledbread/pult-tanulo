@@ -115,7 +115,7 @@
           <p class="lead">A hivatalos Quick Start Guide 14 fejezete kezdőknek elmagyarázva. A lépéseket te csinálod meg az onPC-ben — ez az oldal mellette fut, és megmutatja, melyik gombot nyomd és mit kell látnod.</p>
           <div class="cta-row"><a class="btn btn-primary" href="#/lecke/00">Kezdés</a><a class="btn" href="#/temak">Témakörök</a><a class="btn btn-ghost" href="#/billentyuk">Billentyűk</a></div>
           <ul class="facts">
-            <li>Leckék <b>${lessons().length}</b></li>
+            <li>Leckék <b>${MA.core().length} + ${lessons().length - MA.core().length} extra</b></li>
             <li>Lépések az onPC-ben <b>${steps}</b></li>
             <li>Becsült idő <b>~${Math.round(mins / 60)} óra</b></li>
             <li>Szoftver <b>grandMA2 onPC 3.9</b></li>
@@ -215,7 +215,7 @@
         <p class="eyebrow rv">Lecke ${l.id} · ${partName(l.part)}</p>
         <h1 class="h1 rv rv-d1">${esc(l.title)}</h1>
         <p class="lead rv rv-d2">${md(l.lead)}</p>
-        <div class="l-meta rv rv-d3">${herePos && !q.s ? `<a class="chip go here-chip" href="#/lecke/${l.id}?s=step-${herePos.id}">Itt tartottál: ${herePos.n}. lépés ›</a>` : ''}<span class="chip">${icon.clock} kb. ${l.min} perc</span><span class="chip">${icon.monitor} onPC kell</span><span class="chip">Eredeti fejezet: ${esc(l.en)}</span></div>
+        <div class="l-meta rv rv-d3">${herePos && !q.s ? `<a class="chip go here-chip" href="#/lecke/${l.id}?s=step-${herePos.id}">Itt tartottál: ${herePos.n}. lépés ›</a>` : ''}<span class="chip">${icon.clock} kb. ${l.min} perc</span><span class="chip">${icon.monitor} onPC kell</span><span class="chip">${MA.isExtra(l) ? 'Extra lecke' : 'Eredeti fejezet'}: ${esc(l.en)}</span></div>
         <div class="l-learn win"><h2 class="win-title gray"><span class="ball"></span>Amit megtanulsz</h2><ul>${l.learn.map((x) => `<li>${icon.check}<span>${md(x)}</span></li>`).join('')}</ul></div>
       </header>
       <div class="l-layout"><nav class="l-toc" aria-label="Lecke tartalma">${toc}</nav>

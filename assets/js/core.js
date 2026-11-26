@@ -14,9 +14,14 @@
       { id: 'alapok', name: 'Alapok', sub: 'Show, patch, ablakok, csatornák' },
       { id: 'prog', name: 'Programozás', sub: 'Groupok és cue-k' },
       { id: 'ml', name: 'Moving lightok', sub: 'Mozgófejek hozzáadása és vezérlése' },
-      { id: 'preset', name: 'Presetek és lejátszás', sub: 'Presetek, második sequence, executorok' }
+      { id: 'preset', name: 'Presetek és lejátszás', sub: 'Presetek, második sequence, executorok' },
+      { id: 'extra', name: 'Extrák', sub: 'Effektek, offset, direkt kapcsoló — nem számít bele a %-ba', extra: true }
     ]
   });
+
+  /* extra lessons are optional: they don't count toward the total % */
+  MA.isExtra = (l) => !!(MA.parts.find((p) => p.id === l.part) || {}).extra;
+  MA.core = () => MA.lessons.filter((l) => !MA.isExtra(l));
 
   MA.lesson = (def) => { MA.lessons.push(def); MA.byId[def.id] = def; };
 
@@ -102,7 +107,7 @@
     const done = st && st.done && st.done[lesson.id];
     return { n, total: ids.length, pct: done ? 1 : ids.length ? n / ids.length : 0 };
   };
-  MA.totalOf = (st) => MA.lessons.length ? MA.lessons.reduce((a, l) => a + MA.progressOf(st, l).pct, 0) / MA.lessons.length : 0;
+  MA.totalOf = (st) => { const ls = MA.core(); return ls.length ? ls.reduce((a, l) => a + MA.progressOf(st, l).pct, 0) / ls.length : 0; };
 
   /* Count steps of a lesson */
   MA.stepIds = (lesson) => lesson.blocks.filter((b) => b.t === 'step').map((b, i) => b.id || String(i + 1));
@@ -114,8 +119,9 @@
     return { n, total, pct };
   };
   MA.totalProgress = () => {
-    if (!MA.lessons.length) return 0;
-    return MA.lessons.reduce((a, l) => a + MA.lessonProgress(l).pct, 0) / MA.lessons.length;
+    const ls = MA.core();
+    if (!ls.length) return 0;
+    return ls.reduce((a, l) => a + MA.lessonProgress(l).pct, 0) / ls.length;
   };
 
   /* ---------- icons ---------- */

@@ -93,10 +93,33 @@
     'Ha véletlenül felugrik egy érték-ablak (kalkulátor): zárd be a sárga X-szel.'
   ], [['04'], ['00']], 'clear oops esc hiba visszavonás');
 
+  t('effect', 'spark', 'Effekt készítése és leállítása', 'Effect Editor · Stomp', 'Futófény, kör, színváltás — és a leállítás a következő cue-ban.', [
+    'Előbb **jelöld ki a lámpákat**.',
+    'Effects pool → jobb klikk egy üres gombra → **Effect Editor**.',
+    '{{Add}} → attribútum ({{Dim}}, {{Position}}, {{MixColor}}) → {{Confirm}}.',
+    'Form cella jobb klikk: {{Chase 5}} = futófény; Pan {{Sin 8}} + Tilt {{Cos 9}} = kör.',
+    'Tárolás cue-ba: lámpák kijelölve, effekt gombja, [[Store Exec 4 Please]].',
+    'Leállítás a következő cue-ban: lámpák kijelölve → [[MA At Please]] (Stomp) → Store.'
+  ], [['15']], 'effekt effect chase kör circle szín stomp leállítás');
+
+  t('offset', 'move', 'Pan/Tilt offset lámpacsere után', 'Patch · Pan Offset · Tilt Offset', 'Az új lámpa kicsit máshová néz — javítsd egyszerre minden pozíción.', [
+    '[[Setup]] → {{Patch & Fixture Schedule}} → a lámpa rétege.',
+    'Görgess jobbra a **Pan Offset** / **Tilt Offset** oszlopig.',
+    'Kattints a lámpa cellájára, írd be az eltolást (pl. `5` vagy `-5`), Enter.',
+    'Zárd be a patch-et → {{Yes}}. Ha visszajön a régi lámpa: offset `0`.'
+  ], [['16']], 'offset pan tilt lámpacsere eltolás patch');
+
+  t('switch', 'plug', 'Direkt kapcsoló (non-dim)', 'DMX Profile · Fixture Type', '50% alatt 0, fölötte 100 — ki-be kapcsolható eszközökhöz.', [
+    'Patch → {{DMX Profiles}} → {{Add}} → {{Edit}} → {{Table Mode}}.',
+    'Pontok: (0, 0) {{Step (End)}} · (128, 255) · (255, 255). {{Label}}: `Direkt kapcsolo`.',
+    '{{Fixture Types}} → {{Add}} → {{Edit}} → {{Add}} {{Dim}}, Coarse `1`, **Profile**: Direkt kapcsolo.',
+    'Patch: {{Add Layer}} → a Direkt kapcsolo típus → szabad csatorna és DMX cím → {{Apply}} → mentés.',
+    'Próba a DMX sheetben: 40% → 0, 60% → 100.'
+  ], [['17']], 'direkt kapcsoló non dim nondim switch dmx profile fixture type relé');
+
   /* Bonus modules (planned) */
   MA.bonus = [
     { id: 'B1', title: 'Executorok és page-ek', en: 'Executors & Pages' },
-    { id: 'B2', title: 'Effektek alapjai', en: 'Effects basics' },
     { id: 'B3', title: 'Layout View és MAtricks', en: 'Layout View & MAtricks' },
     { id: 'B4', title: 'Záró projekt: saját show', en: 'Final project' }
   ];
