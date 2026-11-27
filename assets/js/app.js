@@ -424,16 +424,8 @@
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const lb = $('.lightbox'); if (lb) lb.remove(); const ts = $('#tocSheet'); if (ts) ts.classList.remove('open'); } });
 
-  /* theme switch: MA2 (default) / Modern */
-  const setTheme = (t) => {
-    const modern = t === 'modern';
-    if (modern) document.documentElement.setAttribute('data-theme', 'modern');
-    else document.documentElement.removeAttribute('data-theme');
-    $$('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.themeSet === 'modern') === modern)));
-    try { localStorage.setItem('ma2tanulo:theme', modern ? 'modern' : 'ma2'); } catch (e) { /* ignore */ }
-  };
-  setTheme(document.documentElement.getAttribute('data-theme') === 'modern' ? 'modern' : 'ma2');
-  $$('[data-theme-set]').forEach((b) => b.addEventListener('click', () => setTheme(b.dataset.themeSet)));
+  /* the Modern theme was removed: forget an old theme choice (progress is untouched) */
+  try { localStorage.removeItem('ma2tanulo:theme'); } catch (e) { /* ignore */ }
 
   const menuBtn = $('#menuBtn'), links = $('#gnavLinks');
   menuBtn.addEventListener('click', () => { const open = !links.classList.contains('open'); links.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open); });

@@ -1,4 +1,4 @@
-/* Accounts: login gate, nav user, profile, exam, admin (both themes) */
+/* Accounts: login gate, nav user, profile, exam, admin */
 
 /* nav user button */
 .nav-user { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px; border-radius: var(--r); border: 1px solid var(--gold-dim); background: #000; color: var(--text); font-size: 13px; font-weight: 600; white-space: nowrap; max-width: 150px; flex: none; }
@@ -9,7 +9,6 @@
 .sync.ok { background: var(--green); }
 .sync.syncing, .sync.idle { background: var(--ma); }
 .sync.error { background: var(--red); }
-[data-theme="modern"] .nav-user { border-radius: 999px; border-color: var(--line-2); background: transparent; }
 
 /* login gate */
 .gate { position: fixed; inset: 0; z-index: 85; background: rgba(0, 0, 0, .86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); display: grid; place-items: center; padding: 16px; overflow: auto; }
@@ -23,7 +22,6 @@
 .login-err { color: var(--red); font-size: 14px; min-height: 1em; }
 .login-err:empty { display: none; }
 .login-form .btn-primary { width: 100%; }
-[data-theme="modern"] .login-form input, [data-theme="modern"] .exam-form textarea, [data-theme="modern"] .review textarea, [data-theme="modern"] .review input[type=text] { border-radius: 12px; border-color: var(--line-2); background: var(--panel-2); }
 
 /* progress bars + rows */
 .pbar { display: inline-block; position: relative; width: 100%; max-width: 220px; height: 6px; border-radius: 3px; background: #262626; overflow: hidden; vertical-align: middle; }
@@ -75,7 +73,6 @@ a.prog-row:hover { border-color: var(--ma); text-decoration: none; }
 .rv-lbl { font-size: 12.5px; color: var(--text-3); margin-top: 4px; }
 .rv-tasks summary { cursor: pointer; color: var(--text-2); font-size: 14px; }
 .rv-tasks[open] { display: grid; gap: 4px; }
-[data-theme="modern"] .adm-table tbody tr:hover td { background: rgba(255, 255, 255, .04); }
 
 @media (max-width: 640px) {
   .prof-top, .adm-stats { grid-template-columns: 1fr; }

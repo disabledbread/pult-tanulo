@@ -17,7 +17,6 @@ A lépéseket a **grandMA2 onPC**-ben kell megcsinálni — ez az oldal mellette
 - „Folytatás” menü, Profil oldal
 - Záróvizsga: a tanuló feltölti a .show.gz fájlt, az oktató az oldalon ad visszajelzést (Elfogadva / Javítandó)
 - Admin oldal (lap alja → Admin): mindenki haladása %-ban, vizsgák letöltése és értékelése
-- Két megjelenés: MA2 (alap) és Modern
 
 ## Szerver (Supabase)
 - A kapcsolat adatai: `assets/js/config.js` (csak a nyilvános *anon* kulcs — a service_role kulcs SOHA ne kerüljön ide).
