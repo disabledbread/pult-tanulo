@@ -58,7 +58,7 @@ a.prog-row:hover { border-color: var(--ma); text-decoration: none; }
 .fb-tasks { margin: 8px 0 0; padding-left: 18px; color: var(--text-2); font-size: 14.5px; display: grid; gap: 4px; }
 
 /* admin */
-.adm-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.adm-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
 .adm-stats .win-body { display: grid; }
 .adm-table { min-width: 640px; font-family: var(--font); font-size: 14px; }
 .adm-table tbody tr { cursor: pointer; }
@@ -80,3 +80,51 @@ a.prog-row:hover { border-color: var(--ma); text-decoration: none; }
   .prog-row .pbar { display: none; }
 }
 @media (max-width: 420px) { .nav-user { max-width: 90px; padding: 0 8px; } }
+
+/* ---------- session: idle warning, login note ---------- */
+.idle-warn { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 90; max-width: min(560px, calc(100vw - 32px)); padding: 10px 14px; background: #2a0d0b; border: 1px solid var(--red); border-radius: 4px; color: #ffd0cc; font-size: 14px; line-height: 1.45; box-shadow: 0 8px 30px rgba(0, 0, 0, .6); }
+.idle-warn b { color: #fff; font-family: var(--mono); }
+.login-note { padding: 8px 10px; border: 1px solid var(--gold); border-radius: 4px; background: #1a1500; color: var(--ma); font-size: 14px; }
+
+/* ---------- flag (hibajelzés) ---------- */
+.flag-btn { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 3px; border: 1px solid #444; background: #000; color: #888; cursor: pointer; }
+.flag-btn svg { width: 15px; height: 15px; }
+.flag-btn:hover { color: var(--red); border-color: var(--red); }
+.chip-flag { cursor: pointer; font: inherit; display: inline-flex; align-items: center; gap: 5px; }
+.chip-flag svg { width: 13px; height: 13px; }
+.chip-flag:hover { color: var(--red); border-color: var(--red); }
+.report-box .win-title svg { width: 14px; height: 14px; color: var(--red); }
+.report-box textarea { width: 100%; resize: vertical; font: inherit; padding: 8px 10px; background: #000; color: var(--text); border: 1px solid var(--gold-dim); border-radius: 4px; }
+.adm-rep-stat, .adm-rep-stat:hover, .adm-rep-stat * { text-decoration: none; color: inherit; }
+.adm-rep-stat .muted { display: flex; align-items: center; gap: 6px; }
+.adm-rep-stat svg { width: 13px; height: 13px; vertical-align: -2px; }
+.adm-rep-stat.hot { border-color: var(--red); }
+.adm-rep-stat.hot b { color: var(--red); }
+.rep-table td { vertical-align: top; }
+.rep-table .rep-c { white-space: pre-wrap; max-width: 420px; }
+.rep-table .rep-act { white-space: nowrap; }
+.rep-table .rep-act .btn + .btn { margin-left: 6px; }
+.rep-table tr.rep-done td { opacity: .55; }
+.part-head h3 svg { width: 15px; height: 15px; vertical-align: -2px; color: var(--red); }
+
+/* ---------- elméleti teszt ---------- */
+.qz-card { margin-bottom: 6px; }
+.qz-card p { margin: 0 0 8px; }
+.qz-hist { margin-top: 12px; }
+.qz-bar { position: sticky; top: calc(var(--nav-h) + 8px); z-index: 5; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 8px 12px; margin-bottom: 12px; background: #000; border: 1px solid var(--gold); border-radius: 4px; }
+.qz-time { font: 600 18px var(--mono); color: var(--ma); }
+.qz-count { flex: 1; color: var(--text-2); font-size: 14px; }
+.qo.on { border-color: var(--ma); background: #1f1a00; }
+.qo.on i { background: var(--ma); border-color: var(--ma); color: #000; }
+.qz-result.ok { border-color: var(--green); }
+.qz-result.fix { border-color: var(--red); }
+.qz-score { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+.qz-score span { font: 600 16px var(--mono); color: var(--text-2); }
+.qz-bad { color: #ffb3ab; }
+.qz-good { color: #9fe8b0; }
+.qz-ans { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; font-size: 13.5px; }
+.qz-ans li.ok { color: #9fe8b0; }
+.qz-ans li.bad { color: #ffb3ab; }
+.exam-locked { border-color: #555; }
+@media (max-width: 640px) { .rep-table .rep-act { white-space: normal; } }
+.win-body { padding: 12px 14px; }

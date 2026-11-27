@@ -76,9 +76,9 @@
   const resumePage = () => {
     const hasSaved = !!(MA.store.pos() && MA.byId[MA.store.pos().l]);
     const w = where();
-    const noMemory = `<div class="call info"><span class="ci">${icon.info}</span><div><h4>Nincs mentett hely</h4><p>Ebben a böngészőben nem találok mentett haladást — például másik gépen vagy, vagy törlődtek az adatok. Válaszd ki lent, hol tartasz.</p></div></div>`;
+    const noMemory = `<div class="call info"><span class="ci">${icon.info}</span><div><h4>Nincs mentett hely</h4><p>Még nincs mentett helyed a fiókodban. Válaszd ki lent, hol tartasz.</p></div></div>`;
     app.innerHTML = `<header class="page-head wrap">${cmdbar('Folytatás')}<h1 class="h1">Honnan folytatod?</h1>
-      <p class="lead">Az oldal megjegyzi, hol tartottál ebben a böngészőben. Ha mégsem, itt kiválaszthatod a leckét és a lépést.</p></header>
+      <p class="lead">Az oldal megjegyzi a fiókodban, hol tartottál. Ha mégsem, itt kiválaszthatod a leckét és a lépést.</p></header>
       <section class="wrap" style="padding-bottom:40px">
         ${hasSaved ? resumeCard() : noMemory}
         <label class="mark-prev"><input type="checkbox" id="markPrev" checked> <span>Az előtte lévő leckéket és lépéseket jelölje késznek</span></label>
@@ -162,7 +162,7 @@
         ctx.toc.push({ id: domId, text: b.title, step: sid });
         const done = MA.store.step(l.id, sid);
         return `<article class="step${done ? ' done' : ''}" id="${domId}" data-sid="${sid}">
-          <div class="step-head"><span class="step-n">${ctx.n}</span><h3 class="step-title">${md(b.title)}</h3><button class="check" aria-pressed="${done}" data-step="${sid}"><i>${icon.check}</i><span>${done ? 'Kész' : 'Megcsináltam'}</span></button></div><div class="step-body">${b.text ? `<p class="step-text">${md(b.text)}</p>` : ''}
+          <div class="step-head"><span class="step-n">${ctx.n}</span><h3 class="step-title">${md(b.title)}</h3><button class="flag-btn" type="button" data-flag="${sid}" data-title="${esc(plain(b.title))}" title="Hibás ez a lépés? Jelezd az oktatónak!" aria-label="Hibajelzés: ${esc(plain(b.title))}">${icon.flag}</button><button class="check" aria-pressed="${done}" data-step="${sid}"><i>${icon.check}</i><span>${done ? 'Kész' : 'Megcsináltam'}</span></button></div><div class="step-body">${b.text ? `<p class="step-text">${md(b.text)}</p>` : ''}
           ${b.keys ? keysBlock(b.keys) : ''}${b.cmd ? cmdBlock(b.cmd) : ''}${b.fb ? fbBlock(b.fb) : ''}
           ${b.see ? `<div class="see">${icon.eye}<div><b>Mit kell látnod:</b> ${md(b.see)}</div></div>` : ''}
           ${b.mini ? `<div class="mini">${icon.bulb}<div>${md(b.mini)}</div></div>` : ''}
@@ -215,7 +215,7 @@
         <p class="eyebrow rv">Lecke ${l.id} · ${partName(l.part)}</p>
         <h1 class="h1 rv rv-d1">${esc(l.title)}</h1>
         <p class="lead rv rv-d2">${md(l.lead)}</p>
-        <div class="l-meta rv rv-d3">${herePos && !q.s ? `<a class="chip go here-chip" href="#/lecke/${l.id}?s=step-${herePos.id}">Itt tartottál: ${herePos.n}. lépés ›</a>` : ''}<span class="chip">${icon.clock} kb. ${l.min} perc</span><span class="chip">${icon.monitor} onPC kell</span><span class="chip">${MA.isExtra(l) ? 'Extra lecke' : 'Eredeti fejezet'}: ${esc(l.en)}</span></div>
+        <div class="l-meta rv rv-d3">${herePos && !q.s ? `<a class="chip go here-chip" href="#/lecke/${l.id}?s=step-${herePos.id}">Itt tartottál: ${herePos.n}. lépés ›</a>` : ''}<span class="chip">${icon.clock} kb. ${l.min} perc</span><span class="chip">${icon.monitor} onPC kell</span><button class="chip chip-flag" type="button" data-flag="" data-title="" title="Hibát találtál ebben a leckében? Jelezd!">${icon.flag} Hibát találtál?</button><span class="chip">${MA.isExtra(l) ? 'Extra lecke' : 'Eredeti fejezet'}: ${esc(l.en)}</span></div>
         <div class="l-learn win"><h2 class="win-title gray"><span class="ball"></span>Amit megtanulsz</h2><ul>${l.learn.map((x) => `<li>${icon.check}<span>${md(x)}</span></li>`).join('')}</ul></div>
       </header>
       <div class="l-layout"><nav class="l-toc" aria-label="Lecke tartalma">${toc}</nav>
@@ -239,6 +239,8 @@
     refresh();
 
     app.addEventListener('click', (e) => {
+      const fl = e.target.closest('[data-flag]');
+      if (fl) { if (MA.openReport) MA.openReport(l.id, fl.dataset.flag || null, fl.dataset.title || ''); return; }
       const chk = e.target.closest('.check');
       if (chk) {
         const sid = chk.dataset.step;
@@ -429,7 +431,7 @@
 
   const menuBtn = $('#menuBtn'), links = $('#gnavLinks');
   menuBtn.addEventListener('click', () => { const open = !links.classList.contains('open'); links.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open); });
-  $('#resetBtn').addEventListener('click', () => { if (confirm('Biztosan törlöd a haladásodat? (Csak ebben a böngészőben tárolt pipák és kvízválaszok.)')) { MA.store.reset(); route(); } });
+  $('#resetBtn').addEventListener('click', () => { if (confirm('Biztosan törlöd a haladásodat? A pipák és kvízválaszok a fiókodból is törlődnek.')) { MA.store.reset(); route(); } });
 
   /* ---------------- router ---------------- */
   let cleanup = [];

@@ -92,11 +92,18 @@
     /* merge server progress into local: union of ticks, newest position wins */
     merge(remote) {
       if (!remote) return;
-      ['steps', 'quiz', 'done'].forEach((k) => { state[k] = Object.assign({}, remote[k] || {}, state[k] || {}); });
-      const rp = remote.pos, lp = state.pos;
-      if (rp && (!lp || (rp.t || 0) > (lp.t || 0))) { state.pos = rp; state.last = remote.last || rp.l; }
+      state = MA.mergeStates(state, remote);
       try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
     }
+  };
+
+  /* pure merge of two progress states (local wins on conflicts, newest position wins) */
+  MA.mergeStates = (local, remote) => {
+    const out = Object.assign(blank(), remote || {}, local || {});
+    ['steps', 'quiz', 'done'].forEach((k) => { out[k] = Object.assign({}, (remote || {})[k] || {}, (local || {})[k] || {}); });
+    const rp = remote && remote.pos, lp = local && local.pos;
+    if (rp && (!lp || (rp.t || 0) > (lp.t || 0))) { out.pos = rp; out.last = remote.last || rp.l; }
+    return out;
   };
 
   /* progress of any saved state (used by the admin page) */
@@ -128,6 +135,7 @@
   const I = (d, extra = '') => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${d}</svg>`;
   MA.icon = {
     check: I('<path d="M5 12.5l4.2 4.2L19 7"/>', 'stroke-width="2.6"'),
+    flag: I('<path d="M5 21V4"/><path d="M5 4h12l-2.5 4.5L17 13H5"/>'),
     chev: '<svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
     eye: I('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
     kbd: I('<rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>'),

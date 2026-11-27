@@ -159,3 +159,5 @@ create policy "admin deletes exam files" on storage.objects for delete to authen
 --    (your email + a password, tick "Auto Confirm User").
 -- 2. Then run this line with YOUR email:
 -- insert into public.admins (user_id) select id from auth.users where email = 'te@pelda.hu';
+
+-- 2. lépés: futtasd a supabase/quiz-reports.sql-t is (elméleti teszt + hibajelzések).

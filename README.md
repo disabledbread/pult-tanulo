@@ -14,13 +14,15 @@ A lépéseket a **grandMA2 onPC**-ben kell megcsinálni — ez az oldal mellette
 - Rövid kvízek, „A színházban” tippek
 - Témakörök (gyors receptek), Billentyűk, Szótár
 - Belépés csak névvel (jelszó/email nélkül): a haladás a szerverre mentődik, bármelyik gépről folytatható
+- Biztonság közös gépen: oldal-frissítéskor és 10 perc tétlenség után automatikus kilépés (az admin is)
+- Hibajelzés: minden lépésnél és leckénél zászló gomb, megjegyzéssel; az admin oldalon látszik (Megoldva / Törlés)
 - „Folytatás” menü, Profil oldal
-- Záróvizsga: a tanuló feltölti a .show.gz fájlt, az oktató az oldalon ad visszajelzést (Elfogadva / Javítandó)
+- Záróvizsga két részben: 1. elméleti teszt (30 véletlen kérdés, időmérés, legalább 80%, bármennyi próba), 2. a .show.gz feltöltése — az oktató az oldalon ad visszajelzést (Elfogadva / Javítandó)
 - Admin oldal (lap alja → Admin): mindenki haladása %-ban, vizsgák letöltése és értékelése
 
 ## Szerver (Supabase)
 - A kapcsolat adatai: `assets/js/config.js` (csak a nyilvános *anon* kulcs — a service_role kulcs SOHA ne kerüljön ide).
-- Adatbázis-beállítás: `supabase/setup.sql` (egyszer kell lefuttatni a Supabase SQL Editorban).
+- Adatbázis-beállítás: `supabase/setup.sql`, utána `supabase/quiz-reports.sql` (egyszer kell lefuttatni a Supabase SQL Editorban).
 - Admin: Supabase → Authentication → Users → új felhasználó, majd felvétel az `admins` táblába (lásd a setup.sql végét).
 - A záróvizsga feladatlistája: `assets/js/data/exam.js`.
 
