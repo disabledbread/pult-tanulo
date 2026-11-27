@@ -5,7 +5,7 @@ MA.lesson({
   blocks: [
     { t: 'tip', kind: 'info', title: 'Ha véletlenül felugrik egy ablak a Store-ra', text: 'Ha a Store gombot sokáig nyomva tartod, megnyílik egy beállító ablak. Ezzel most nem kell foglalkoznod — az alapbeállítás jó. Csukd be: [[Esc Esc]].' },
     { t: 'h', text: 'Position presetek' },
-    { t: 'step', title: 'Első pozíció', keys: 'Fixture 1 1 1 Thru 1 3 3 Please', text: 'Jelöld ki az összes Mac 700-at, és a **Position** encoderekkel állíts be valami pozíciót. Aztán [[Store]] + kattints a Position pool **első** gombjára.', see: 'A Fixture Sheetben a számok helyett **P2.1** áll: Preset Pool 2 (Position), 1-es gomb.', shot: 'ch13-preset-links' },
+    { t: 'step', title: 'Első pozíció', keys: 'Fixture 1 1 1 Thru 1 3 3 Please', text: 'Jelöld ki az összes Mac 700-at, és a **Position** encoderekkel állíts be valami pozíciót. Aztán [[Store]] + kattints a Position pool **első** gombjára.', see: 'A Position pool első gombja már nem üres: ott a preseted.' },
     { t: 'step', title: 'Második pozíció számmal', keys: 'Store Preset 2 . 2 Please', text: 'Mozgasd másfelé a lámpákat, majd tárold így. A „2 .” közvetlenül a Position poolra mutat (a pool neve is „2 Position”).' },
     { t: 'step', title: 'Harmadik pozíció, takarítás', keys: 'Clear', text: 'Csinálj még egy harmadik pozíció presetet (Store + a pool 3. gombja), utána ürítsd a programmert.' },
     { t: 'h', text: 'Color és Gobo presetek' },
@@ -22,7 +22,6 @@ MA.lesson({
     { t: 'checkpoint', items: ['3 Position, 3 Color, 3 Gobo és 1 All preset.', 'Mindegyiknek van neve.', 'A programmer üres.'] },
     { t: 'quiz', items: [
       { q: 'Mit jelent a G a preset gombon?', a: ['Group', 'Global — a lámpatípus minden példánya használhatja', 'Gobo'], ok: 1, why: 'A Global preset a típus összes lámpájára érvényes, később hozzáadottakra is.' },
-      { q: 'Mit jelent a P2.1 a Fixture Sheetben?', a: ['2-es pool (Position), 1-es preset — a lámpa a presetre mutat', 'Patch 2.1', 'Page 2, Cue 1'], ok: 0, why: 'A lámpa nem számot, hanem a presetre mutató linket kapott.' },
       { q: 'Mit csinál a Please háromszor kijelölés után?', a: ['Törli a lámpákat', 'Aktiválja az összes attribútumot (alapértéken)', 'Elmenti a showt'], ok: 1, why: 'A további Please-ek az összes attribútumot aktiválják/kikapcsolják.' }
     ] }
   ]
