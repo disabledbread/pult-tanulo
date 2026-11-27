@@ -52,7 +52,7 @@
   g('Effect', 'effekt', 'Magától ismétlődő változás: futófény, kör, színváltás. Az Effect Editorban rakod össze, az Effects poolba kerül, és cue-ba tárolható.', ['15']);
   g('Effect Editor', 'effekt-szerkesztő', 'Itt építed fel az effektet: Add → attribútum (pl. Dim, Position, MixColor), majd Form (Chase, Sin, Cos…), Speed, Low/High, Phase.', ['15']);
   g('Stomp', 'effekt leállítása', 'Leállítja a futó effektet a kijelölt lámpákon. Gombokkal: MA + At, majd Please. Cue-ba tárolva a következő jelben állítja le az effektet.', ['15']);
-  g('Offset', 'eltolás', 'A patch-ben a Pan Offset / Tilt Offset ennyivel eltolja a lámpa kimenetét. Lámpacsere után így javítod az összes pozíciót egyszerre.', ['16']);
+  g('Offset', 'eltolás', 'A Pan Offset / Tilt Offset ennyivel eltolja a lámpa kimenetét. Lámpacsere után így javítod az összes pozíciót egyszerre. Leggyorsabb: Layout View → jobb klikk (pulton hosszú nyomás) a lámpára.', ['16']);
   g('DMX Profile', 'kimeneti görbe', 'Megmondja, melyik bemenő értékből milyen DMX érték menjen ki. A fixture type csatornájára teszed (Profile oszlop). Pl. direkt kapcsoló: 50% alatt 0, fölötte 100.', ['17']);
   g('Shutter', 'zár / strobe', 'A mozgófej fényzárja. A Beam oldalon a Shutter encoderrel nyitod, zárod vagy villogtatod (Strobe). Dimmer csatornát nem strobozunk.', ['15']);
   g('Toggle', 'be-ki kapcsoló gomb', 'Executor gomb funkció: egy nyomás be, még egy ki. Assign menüben állítod be. Pl. DIM gomb, munkafény.', ['18']);

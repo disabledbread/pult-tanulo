@@ -102,12 +102,12 @@
     'Leállítás a következő cue-ban: lámpák kijelölve → [[MA At Please]] (Stomp) → Store.'
   ], [['15']], 'effekt effect chase kör circle szín stomp leállítás');
 
-  t('offset', 'move', 'Pan/Tilt offset lámpacsere után', 'Patch · Pan Offset · Tilt Offset', 'Az új lámpa kicsit máshová néz — javítsd egyszerre minden pozíción.', [
-    '[[Setup]] → {{Patch & Fixture Schedule}} → a lámpa rétege.',
-    'Görgess jobbra a **Pan Offset** / **Tilt Offset** oszlopig.',
-    'Kattints a lámpa cellájára, írd be az eltolást (pl. `5` vagy `-5`), Enter.',
-    'Zárd be a patch-et → {{Yes}}. Ha visszajön a régi lámpa: offset `0`.'
-  ], [['16']], 'offset pan tilt lámpacsere eltolás patch');
+  t('offset', 'move', 'Pan/Tilt offset lámpacsere után', 'Layout · Pan Offset · Tilt Offset', 'Az új lámpa kicsit máshová néz — javítsd egyszerre minden pozíción.', [
+    'Layout View → **jobb klikk** a lámpára (pulton: hosszú nyomás).',
+    'A lámpa ablakában: **Tilt Offset** / **Pan Offset** cella → érték (pl. `-2.5`), Enter.',
+    'Sárga X — az offset azonnal él.',
+    'Ha visszajön a régi lámpa: offset `0`. (Ugyanez a patch-ben is megvan.)'
+  ], [['16']], 'offset pan tilt lámpacsere eltolás layout patch');
 
   t('switch', 'plug', 'Direkt kapcsoló (non-dim)', 'DMX Profile · Fixture Type', '50% alatt 0, fölötte 100 — ki-be kapcsolható eszközökhöz.', [
     'Patch → {{DMX Profiles}} → {{Add}} → {{Edit}} → {{Table Mode}}.',
