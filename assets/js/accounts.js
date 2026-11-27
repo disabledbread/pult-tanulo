@@ -220,6 +220,7 @@
   /* ---------- ADMIN ---------- */
   const lessonTitle = (id) => (MA.byId[id] ? `${id} · ${MA.byId[id].title}` : '—');
   const stillHere = (app) => document.body.contains(app) && location.hash.startsWith('#/admin');
+  const adm = { q: '', sort: 'active', rep: 'open' };      // remembered while the page is open
 
   MA.routes.admin = async ({ app, parts }) => {
     if (!C.ready) { app.innerHTML = notReady('Admin'); return; }
@@ -238,20 +239,52 @@
     try { [learners, subs, quiz, reports] = await Promise.all([C.admin.learners(), C.admin.submissions(), soft(C.admin.quizAttempts()), soft(C.admin.reports())]); }
     catch (e) { app.innerHTML = head('Admin', 'Hiba') + `<section class="wrap"><p class="login-err">Nem sikerült betölteni: ${esc(e.message || e)}</p></section>`; return; }
     if (!stillHere(app)) return;
-    const D = { learners, subs, quiz, reports };
+    const D = { learners, subs, quiz, reports, latest: {} };
+    subs.forEach((x) => { if (!D.latest[x.username]) D.latest[x.username] = x; });
     if (parts[1] === 'u' && parts[2]) return adminDetail(app, D, decodeURIComponent(parts[2]));
+    if (parts[1] === 'vizsgak') return adminExams(app, D);
     if (parts[1] === 'jelzesek') return adminReports(app, D);
     adminList(app, D);
   };
 
+  /* ---------- shared bits ---------- */
   const mmss = (s) => (MA.quiz ? MA.quiz.mmss(s) : String(s));
-  const quizCell = (a) => (a ? `<b>${a.score}/${a.total}</b> <span class="muted small">${MA.quiz.pct(a)}% · ⏱ ${mmss(a.duration_s)}</span><br>${a.passed ? '<span class="chip st st-ok">Sikeres</span>' : '<span class="chip st st-fix">Nem sikerült</span>'}` : '<span class="muted">—</span>');
+  const qpct = (a) => (MA.quiz ? MA.quiz.pct(a) : 0);
+  const okChip = (a) => (a.passed ? '<span class="chip st st-ok">Sikeres</span>' : '<span class="chip st st-fix">Nem sikerült</span>');
   const finished = (quiz, u) => quiz.filter((a) => a.username === u && a.finished_at);
   const bestOf = (list) => list.reduce((b, a) => (!b || a.score / a.total > b.score / b.total ? a : b), null);
-  const where = (r) => `${esc(r.lesson_id)}${MA.byId[r.lesson_id] ? ' · ' + esc(MA.byId[r.lesson_id].title) : ''}${r.step_title ? ` — <i>${esc(r.step_title)}</i>` : ''}`;
-  const reportRow = (r, showUser) => `<tr class="${r.status === 'megoldva' ? 'rep-done' : ''}">
-      <td>${fmt(r.created_at)}</td>
-      ${showUser ? `<td><a href="#/admin/u/${encodeURIComponent(r.username)}">${esc(r.username)}</a></td>` : ''}
+  const quizCell = (att) => {
+    const b = bestOf(att);
+    if (!b) return '<span class="muted">—</span>';
+    return `<div class="adm-qz"><b>${b.score}/${b.total}</b><span>${qpct(b)}% · ⏱ ${mmss(b.duration_s)}</span>${okChip(b)}${att.length > 1 ? `<span class="muted small">${att.length} próba</span>` : ''}</div>`;
+  };
+  const counts = (D) => ({
+    waiting: D.subs.filter((x) => x.status === 'bekuldve' && D.latest[x.username] === x).length,
+    openRep: D.reports.filter((r) => r.status !== 'megoldva').length,
+    passed: D.learners.filter((l) => D.quiz.some((a) => a.username === l.username && a.passed)).length
+  });
+  const nameOf = (D, u) => { const l = D.learners.find((x) => x.username === u); return l ? (l.display_name || u) : u; };
+  const userLink = (D, u) => `<a href="#/admin/u/${encodeURIComponent(u)}"><b>${esc(nameOf(D, u))}</b></a><br><span class="muted small">${esc(u)}</span>`;
+
+  /* tabs + tools around every admin page */
+  const shell = (app, D, tab, title, lead, body) => {
+    const c = counts(D);
+    const tabs = [['tanulok', '#/admin', 'Tanulók', D.learners.length, false], ['vizsgak', '#/admin/vizsgak', 'Vizsgák', c.waiting, true], ['jelzesek', '#/admin/jelzesek', `${MA.icon.flag} Hibajelzések`, c.openRep, true]];
+    app.innerHTML = `<header class="page-head wrap-wide adm-head">${ui().cmdbar('Admin')}
+        <div class="adm-top"><h1 class="h1">${title}</h1><div class="adm-tools"><button class="btn btn-sm btn-ghost" id="admReload" type="button">Frissítés</button><button class="btn btn-sm btn-ghost" id="admOut" type="button">Kilépés</button></div></div>
+        ${lead ? `<p class="adm-lead">${lead}</p>` : ''}
+        <nav class="adm-tabs" aria-label="Admin">${tabs.map(([id, href, t, n, hot]) => `<a href="${href}" class="${tab === id ? 'on' : ''}">${t}${n ? `<span class="badge${hot ? ' hot' : ''}">${n}</span>` : ''}</a>`).join('')}</nav>
+      </header><section class="wrap-wide adm" style="padding-bottom:40px">${body}</section>`;
+    $('#admReload', app).addEventListener('click', () => ui().route());
+    $('#admOut', app).addEventListener('click', async () => { await C.admin.logout(); ui().route(); });
+  };
+  const kpi = (n, label, href, hot) => `${href ? `<a class="adm-kpi${hot ? ' hot' : ''}" href="${href}">` : '<div class="adm-kpi">'}<b>${n}</b><span>${label}</span>${href ? '</a>' : '</div>'}`;
+
+  /* ---------- reports (flags) ---------- */
+  const where = (r) => `${esc(r.lesson_id)}${MA.byId[r.lesson_id] ? ' · ' + esc(MA.byId[r.lesson_id].title) : ''}${r.step_title ? `<br><span class="muted small">${esc(r.step_title)}</span>` : ''}`;
+  const reportRow = (D, r, showUser) => `<tr class="${r.status === 'megoldva' ? 'rep-done' : ''}">
+      <td class="nowrap">${fmt(r.created_at)}</td>
+      ${showUser ? `<td>${userLink(D, r.username)}</td>` : ''}
       <td><a href="#/lecke/${esc(r.lesson_id)}${r.step_id ? '?s=step-' + esc(r.step_id) : ''}" target="_blank" rel="noopener">${where(r)}</a></td>
       <td class="rep-c">${esc(r.comment)}</td>
       <td class="rep-act">${r.status === 'megoldva' ? '<span class="chip st st-ok">Megoldva</span>' : `<button class="btn btn-sm rep-ok" data-id="${r.id}" type="button">Megoldva</button>`}<button class="btn btn-sm btn-ghost rep-del" data-id="${r.id}" type="button">Törlés</button></td></tr>`;
@@ -261,20 +294,41 @@
   };
 
   const adminReports = (app, D) => {
-    const open = D.reports.filter((r) => r.status !== 'megoldva').length;
-    app.innerHTML = head('Admin · hibajelzések', 'Hibajelzések', `${open} nyitott · ${D.reports.length} összesen. A tanulók a leckékben a ${MA.icon.flag} gombbal jelzik, ha valami hibás.`) + `<section class="wrap-wide" style="padding-bottom:40px">
-        <div class="cta-row" style="margin-top:0"><a class="btn btn-sm" href="#/admin">‹ Vissza a listához</a></div>
-        <div class="sheet-wrap"><table class="sheet adm-table rep-table"><thead><tr><th>Mikor</th><th>Ki</th><th>Hol</th><th>Megjegyzés</th><th></th></tr></thead>
-        <tbody>${D.reports.length ? D.reports.map((r) => reportRow(r, true)).join('') : '<tr><td colspan="5" class="muted">Még nincs hibajelzés.</td></tr>'}</tbody></table></div>
-      </section>`;
+    const c = counts(D);
+    const list = D.reports.filter((r) => adm.rep === 'all' || r.status !== 'megoldva')
+      .sort((a, b) => (a.status === 'megoldva') - (b.status === 'megoldva') || new Date(b.created_at) - new Date(a.created_at));
+    shell(app, D, 'jelzesek', 'Hibajelzések', `A tanulók a leckékben a ${MA.icon.flag} gombbal jelzik, ha valami nem stimmel. A „Hol” linkre kattintva megnyílik a lépés.`, `
+      <div class="adm-toolbar"><div class="seg" role="group"><button type="button" data-rep="open" class="${adm.rep === 'open' ? 'on' : ''}">Nyitott (${c.openRep})</button><button type="button" data-rep="all" class="${adm.rep === 'all' ? 'on' : ''}">Összes (${D.reports.length})</button></div></div>
+      <div class="sheet-wrap"><table class="sheet adm-table rep-table"><thead><tr><th>Mikor</th><th>Ki</th><th>Hol</th><th>Megjegyzés</th><th></th></tr></thead>
+      <tbody>${list.length ? list.map((r) => reportRow(D, r, true)).join('') : `<tr><td colspan="5" class="muted">${adm.rep === 'open' ? 'Nincs nyitott hibajelzés.' : 'Még nincs hibajelzés.'}</td></tr>`}</tbody></table></div>`);
+    $$('[data-rep]', app).forEach((b) => b.addEventListener('click', () => { adm.rep = b.dataset.rep; adminReports(app, D); }));
     bindReports(app);
   };
+
+  /* ---------- exams (show submissions) ---------- */
+  const adminExams = (app, D) => {
+    const waiting = D.subs.filter((x) => x.status === 'bekuldve' && D.latest[x.username] === x);
+    const row = (x) => `<tr data-u="${esc(x.username)}" tabindex="0"><td class="nowrap">${fmt(x.created_at)}</td><td>${userLink(D, x.username)}</td><td>${esc(x.file_name || '')}</td><td>${chip(x.status)}</td><td class="nowrap">${x.reviewed_at ? fmt(x.reviewed_at) : '<span class="muted">—</span>'}</td><td class="go">›</td></tr>`;
+    shell(app, D, 'vizsgak', 'Vizsgák', 'A beküldött show-k. Kattints egy sorra: a tanuló oldalán töltheted le és értékelheted.', `
+      <h3 class="adm-h">Ellenőrzésre vár <span class="muted">${waiting.length}</span></h3>
+      ${waiting.length ? `<div class="sheet-wrap"><table class="sheet adm-table click"><thead><tr><th>Beküldve</th><th>Tanuló</th><th>Fájl</th><th>Állapot</th><th>Értékelve</th><th></th></tr></thead><tbody>${waiting.map(row).join('')}</tbody></table></div>` : '<p class="muted">Nincs ellenőrzésre váró vizsga.</p>'}
+      <h3 class="adm-h">Összes beküldés <span class="muted">${D.subs.length}</span></h3>
+      ${D.subs.length ? `<div class="sheet-wrap"><table class="sheet adm-table click"><thead><tr><th>Beküldve</th><th>Tanuló</th><th>Fájl</th><th>Állapot</th><th>Értékelve</th><th></th></tr></thead><tbody>${D.subs.map(row).join('')}</tbody></table></div>` : '<p class="muted">Még senki nem küldött be vizsgát.</p>'}`);
+    bindRows(app);
+  };
+
+  const bindRows = (app) => $$('.adm-table.click tbody tr[data-u]', app).forEach((tr) => {
+    const go = () => { location.hash = '#/admin/u/' + encodeURIComponent(tr.dataset.u); };
+    tr.addEventListener('click', (e) => { if (!e.target.closest('a')) go(); });
+    tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+  });
 
   const adminLogin = (app) => {
     app.innerHTML = head('Admin', 'Admin belépés', 'Csak az oktatónak.') + `<section class="wrap"><form class="login-box win" id="admForm" autocomplete="on">
         <div class="win-title"><span class="ball"></span>Admin</div>
         <div class="login-form"><input id="admEmail" type="email" placeholder="Email" autocomplete="username" required>
         <input id="admPass" type="password" placeholder="Jelszó" autocomplete="current-password" required>
+        <p class="muted small">Biztonság: az oldal frissítésekor és ${C.IDLE_MIN} perc tétlenség után az admin is kilép.</p>
         <div class="login-err" id="admErr" role="alert"></div><button class="btn btn-primary" type="submit">Belépés</button></div></form></section>`;
     $('#admForm', app).addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -285,58 +339,75 @@
     });
   };
 
+  /* ---------- learner list ---------- */
   const adminList = (app, D) => {
-    const { learners, subs, quiz, reports } = D;
-    const latest = {};
-    subs.forEach((s) => { if (!latest[s.username]) latest[s.username] = s; });
-    const waiting = subs.filter((s) => s.status === 'bekuldve' && latest[s.username] === s).length;
+    const { learners } = D;
+    const c = counts(D);
     const avg = learners.length ? learners.reduce((a, l) => a + (l.pct || 0), 0) / learners.length : 0;
-    const openRep = reports.filter((r) => r.status !== 'megoldva').length;
-    app.innerHTML = head('Admin', 'Tanulók') + `<section class="wrap-wide" style="padding-bottom:40px">
-        <div class="adm-stats">
-          <div class="win"><div class="win-body"><b class="big">${learners.length}</b><span class="muted">tanuló</span></div></div>
-          <div class="win"><div class="win-body"><b class="big">${pctTxt(avg)}</b><span class="muted">átlagos haladás</span></div></div>
-          <div class="win"><div class="win-body"><b class="big">${waiting}</b><span class="muted">vizsga vár ellenőrzésre</span></div></div>
-          <a class="win adm-rep-stat${openRep ? ' hot' : ''}" href="#/admin/jelzesek"><div class="win-body"><b class="big">${openRep}</b><span class="muted">${MA.icon.flag} nyitott hibajelzés ›</span></div></a>
-        </div>
-        <div class="sheet-wrap"><table class="sheet adm-table">
-          <thead><tr><th>Név</th><th>Haladás</th><th>Hol tart</th><th>Utoljára aktív</th><th>Elméleti teszt (legjobb)</th><th>Show vizsga</th></tr></thead>
-          <tbody>${learners.length ? learners.map((l) => { const att = finished(quiz, l.username); return `<tr data-u="${esc(l.username)}" tabindex="0">
-              <td><b>${esc(l.display_name || l.username)}</b><br><span class="muted small">${esc(l.username)}</span></td>
-              <td class="adm-pct">${bar(l.pct)}<span>${pctTxt(l.pct)}</span></td>
-              <td>${esc(lessonTitle(l.current_lesson))}</td>
-              <td>${ago(l.updated_at)}</td>
-              <td>${quizCell(bestOf(att))}${att.length > 1 ? `<br><span class="muted small">${att.length} próba</span>` : ''}</td>
-              <td>${latest[l.username] ? chip(latest[l.username].status) : '<span class="muted">—</span>'}</td></tr>`; }).join('') : '<tr><td colspan="6" class="muted">Még senki nem lépett be.</td></tr>'}</tbody>
-        </table></div>
-        <div class="cta-row"><button class="btn btn-ghost" id="admReload" type="button">Frissítés</button><button class="btn btn-ghost" id="admOut" type="button">Admin kilépés</button></div>
-      </section>`;
-    $$('.adm-table tbody tr[data-u]', app).forEach((tr) => {
-      const go = () => { location.hash = '#/admin/u/' + encodeURIComponent(tr.dataset.u); };
-      tr.addEventListener('click', go);
-      tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
-    });
-    $('#admReload', app).addEventListener('click', () => ui().route());
-    $('#admOut', app).addEventListener('click', async () => { await C.admin.logout(); ui().route(); });
+    shell(app, D, 'tanulok', 'Tanulók', '', `
+      <div class="adm-kpis">
+        ${kpi(learners.length, 'tanuló')}
+        ${kpi(pctTxt(avg), 'átlagos haladás')}
+        ${kpi(`${c.passed}/${learners.length}`, 'átment az elméleti teszten')}
+        ${kpi(c.waiting, 'show vár ellenőrzésre', '#/admin/vizsgak', c.waiting > 0)}
+        ${kpi(c.openRep, 'nyitott hibajelzés', '#/admin/jelzesek', c.openRep > 0)}
+      </div>
+      <div class="adm-toolbar">
+        <input class="adm-search" id="admQ" type="search" placeholder="Keresés névre…" value="${esc(adm.q)}" aria-label="Keresés névre">
+        <label class="adm-sort">Rendezés <select id="admSort">
+          <option value="active"${adm.sort === 'active' ? ' selected' : ''}>Utoljára aktív</option>
+          <option value="name"${adm.sort === 'name' ? ' selected' : ''}>Név</option>
+          <option value="pct"${adm.sort === 'pct' ? ' selected' : ''}>Haladás</option>
+          <option value="quiz"${adm.sort === 'quiz' ? ' selected' : ''}>Elméleti teszt</option>
+        </select></label>
+      </div>
+      <div class="sheet-wrap"><table class="sheet adm-table click">
+        <thead><tr><th>Név</th><th>Haladás</th><th>Hol tart</th><th>Aktív</th><th>Elméleti teszt</th><th>Show vizsga</th><th></th></tr></thead>
+        <tbody id="admRows"></tbody>
+      </table></div>`);
+    const rows = () => {
+      const q = C.slug(adm.q);
+      const best = (l) => { const b = bestOf(finished(D.quiz, l.username)); return b ? b.score / b.total : -1; };
+      const list = learners.filter((l) => !q || l.username.includes(q) || C.slug(l.display_name || '').includes(q)).slice().sort((a, b) =>
+        adm.sort === 'name' ? String(a.display_name || a.username).localeCompare(String(b.display_name || b.username), 'hu')
+          : adm.sort === 'pct' ? (b.pct || 0) - (a.pct || 0)
+            : adm.sort === 'quiz' ? best(b) - best(a)
+              : new Date(b.updated_at) - new Date(a.updated_at));
+      $('#admRows', app).innerHTML = list.length ? list.map((l) => `<tr data-u="${esc(l.username)}" tabindex="0">
+          <td><b>${esc(l.display_name || l.username)}</b><br><span class="muted small">${esc(l.username)}</span></td>
+          <td class="adm-pct">${bar(l.pct)}<span>${pctTxt(l.pct)}</span></td>
+          <td>${esc(lessonTitle(l.current_lesson))}</td>
+          <td class="nowrap">${ago(l.updated_at)}</td>
+          <td>${quizCell(finished(D.quiz, l.username))}</td>
+          <td>${D.latest[l.username] ? chip(D.latest[l.username].status) : '<span class="muted">—</span>'}</td>
+          <td class="go">›</td></tr>`).join('') : `<tr><td colspan="7" class="muted">${learners.length ? 'Nincs találat.' : 'Még senki nem lépett be.'}</td></tr>`;
+      bindRows(app);
+    };
+    rows();
+    $('#admQ', app).addEventListener('input', (e) => { adm.q = e.target.value; rows(); });
+    $('#admSort', app).addEventListener('change', (e) => { adm.sort = e.target.value; rows(); });
   };
 
+  /* ---------- one learner ---------- */
   const adminDetail = (app, D, username) => {
     const l = D.learners.find((x) => x.username === username);
-    if (!l) { app.innerHTML = head('Admin', 'Nincs ilyen tanuló') + '<section class="wrap"><a class="btn" href="#/admin">‹ Vissza</a></section>'; return; }
+    if (!l) { shell(app, D, 'tanulok', 'Nincs ilyen tanuló', '', '<a class="btn" href="#/admin">‹ Vissza</a>'); return; }
     const mine = D.subs.filter((s) => s.username === username);
     const tries = D.quiz.filter((a) => a.username === username);
+    const done = tries.filter((a) => a.finished_at);
+    const best = bestOf(done);
     const myReps = D.reports.filter((r) => r.username === username);
-    const tryRow = (a) => `<tr><td>${fmt(a.started_at)}</td>
-        <td>${a.finished_at ? `<b>${a.score}/${a.total}</b> (${MA.quiz.pct(a)}%)` : '<span class="muted">félbehagyva</span>'}</td>
-        <td>${a.finished_at ? '⏱ ' + mmss(a.duration_s) : '—'}</td>
-        <td>${a.finished_at ? (a.passed ? '<span class="chip st st-ok">Sikeres</span>' : '<span class="chip st st-fix">Nem sikerült</span>') : ''}</td>
-        <td>${a.finished_at && (a.answers || []).length ? `<details><summary>Válaszok</summary><ol class="qz-ans">${a.answers.map((x) => `<li class="${x.ok ? 'ok' : 'bad'}">${esc(x.q)}<br><span class="small">${x.pick === null ? 'nem válaszolt' : esc(x.pick)}${x.ok ? '' : ` → helyes: ${esc(x.correct)}`}</span></li>`).join('')}</ol></details>` : ''}</td></tr>`;
-    const quizHtml = `<div class="part-head" style="margin-top:22px"><h3>Elméleti teszt</h3><span>${tries.length} próba</span></div>
-        ${tries.length ? `<div class="sheet-wrap"><table class="sheet adm-table qz-hist"><thead><tr><th>Mikor</th><th>Eredmény</th><th>Idő</th><th></th><th></th></tr></thead><tbody>${tries.map(tryRow).join('')}</tbody></table></div>` : '<p class="muted">Még nem írta meg.</p>'}`;
-    const repHtml = myReps.length ? `<div class="part-head" style="margin-top:22px"><h3>${MA.icon.flag} Hibajelzései</h3><span>${myReps.length} db</span></div>
-        <div class="sheet-wrap"><table class="sheet adm-table rep-table"><thead><tr><th>Mikor</th><th>Hol</th><th>Megjegyzés</th><th></th></tr></thead><tbody>${myReps.map((r) => reportRow(r, false)).join('')}</tbody></table></div>` : '';
+    const openReps = myReps.filter((r) => r.status !== 'megoldva').length;
     const st = l.progress || {};
     const E = MA.exam;
+
+    const tile = (x) => { const p = MA.progressOf(st, x); return `<div class="ltile${p.pct === 1 ? ' done' : ''}" title="${esc(x.title)}"><span class="num">${x.id}</span><span class="t">${esc(x.title)}</span>${bar(p.pct)}<span class="v">${p.pct === 1 ? '✓' : `${p.n}/${p.total}`}</span></div>`; };
+    const core = ui().lessons().filter((x) => !MA.isExtra(x)), extra = ui().lessons().filter((x) => MA.isExtra(x));
+    const tryRow = (a) => `<tr><td class="nowrap">${fmt(a.started_at)}</td>
+        <td>${a.finished_at ? `<b>${a.score}/${a.total}</b> (${qpct(a)}%)` : '<span class="muted">félbehagyva</span>'}</td>
+        <td class="nowrap">${a.finished_at ? '⏱ ' + mmss(a.duration_s) : '—'}</td>
+        <td>${a.finished_at ? okChip(a) : ''}</td>
+        <td>${a.finished_at && (a.answers || []).length ? `<details><summary>Válaszok</summary><ol class="qz-ans">${a.answers.map((x) => `<li class="${x.ok ? 'ok' : 'bad'}">${esc(x.q)}<br><span class="small">${x.pick === null ? 'nem válaszolt' : esc(x.pick)}${x.ok ? '' : ` → helyes: ${esc(x.correct)}`}</span></li>`).join('')}</ol></details>` : ''}</td></tr>`;
     const review = (s) => `<form class="review win" data-id="${s.id}">
         <div class="win-title gray"><span class="ball"></span>Beküldve: ${fmt(s.created_at)} · ${chip(s.status)}</div>
         <div class="win-body">
@@ -356,18 +427,26 @@
           <div class="login-err rv-err" role="alert"></div>
           <button class="btn btn-primary" type="submit">Visszajelzés mentése</button>
         </div></form>`;
-    app.innerHTML = head('Admin · ' + username, esc(l.display_name || username), `Felhasználónév: <code>${esc(username)}</code> · utoljára aktív: ${ago(l.updated_at)} · összesen <b>${pctTxt(l.pct)}</b>`) + `
-      <section class="wrap" style="padding-bottom:40px">
-        <div class="cta-row" style="margin-top:0"><a class="btn btn-sm" href="#/admin">‹ Vissza a listához</a></div>
-        <div class="part-head" style="margin-top:18px"><h3>Leckék</h3><span>${esc(lessonTitle(l.current_lesson))}</span></div>
-        <div class="prog-list">${ui().lessons().map((x) => { const p = MA.progressOf(st, x); return `<div class="prog-row"><span class="num">${x.id}</span><span class="t">${esc(x.title)}</span>${bar(p.pct)}<span class="v">${p.n}/${p.total}</span></div>`; }).join('')}</div>
-        ${quizHtml}
-        <div class="part-head" style="margin-top:22px"><h3>Gyakorlati vizsga (show)</h3><span>${mine.length} beküldés</span></div>
-        ${mine.length ? mine.map(review).join('') : '<p class="muted">Még nem küldött be vizsgát.</p>'}
-        <div class="call info"><span class="ci"></span><div><h4>Hogyan nézd meg a showt?</h4><p>Töltsd le, másold be a shows mappába (Start menü → <b>Open Show Folder grandMA2 onPC</b>), majd az onPC-ben Backup → Load Show. Előtte mentsd el, amin éppen dolgozol.</p></div></div>
-        ${repHtml}
-        <div class="cta-row"><button class="btn btn-ghost" id="admDel" type="button">Tanuló törlése</button></div>
-      </section>`;
+    const sec = (id, title, meta, body, open) => `<details class="adm-sec" id="sec-${id}"${open ? ' open' : ''}><summary><span class="ball"></span><h3>${title}</h3><span class="meta">${meta}</span></summary><div class="adm-sec-body">${body}</div></details>`;
+    const latest = mine[0];
+
+    shell(app, D, 'tanulok', esc(l.display_name || username), `<a href="#/admin">‹ Tanulók</a> · <code>${esc(username)}</code> · utoljára aktív: ${ago(l.updated_at)}`, `
+      <div class="adm-kpis">
+        ${kpi(pctTxt(l.pct), 'haladás (alapleckék)')}
+        ${kpi(esc(l.current_lesson || '—'), esc(MA.byId[l.current_lesson] ? MA.byId[l.current_lesson].title : 'hol tart'))}
+        ${kpi(best ? `${best.score}/${best.total}` : '—', best ? `elméleti teszt · ${qpct(best)}% · ⏱ ${mmss(best.duration_s)}` : 'elméleti teszt', '#sec-quiz', best && !best.passed)}
+        ${kpi(latest ? (STATUS[latest.status] || [latest.status])[0] : '—', 'show vizsga', '#sec-exam', !!latest && latest.status === 'bekuldve')}
+        ${kpi(openReps, 'nyitott hibajelzés', '#sec-rep', openReps > 0)}
+      </div>
+      ${sec('quiz', 'Elméleti teszt', `${done.length} beadott · ${tries.length - done.length} félbehagyott`, tries.length ? `<div class="sheet-wrap"><table class="sheet adm-table qz-hist"><thead><tr><th>Mikor</th><th>Eredmény</th><th>Idő</th><th></th><th></th></tr></thead><tbody>${tries.map(tryRow).join('')}</tbody></table></div>` : '<p class="muted">Még nem írta meg.</p>', true)}
+      ${sec('exam', 'Gyakorlati vizsga (show)', `${mine.length} beküldés`, (mine.length ? mine.map(review).join('') : '<p class="muted">Még nem küldött be vizsgát.</p>') + '<p class="muted small adm-howto">Megnézés: töltsd le, másold a shows mappába (Start menü → <b>Open Show Folder grandMA2 onPC</b>), majd onPC-ben Backup → Load Show. Előtte mentsd, amin dolgozol.</p>', mine.length > 0)}
+      ${sec('progress', 'Haladás leckénként', esc(lessonTitle(l.current_lesson)), `<h4 class="adm-sub">Alapleckék</h4><div class="ltiles">${core.map(tile).join('')}</div><h4 class="adm-sub">Extrák</h4><div class="ltiles">${extra.map(tile).join('')}</div>`, true)}
+      ${sec('rep', `${MA.icon.flag} Hibajelzései`, `${myReps.length} db`, myReps.length ? `<div class="sheet-wrap"><table class="sheet adm-table rep-table"><thead><tr><th>Mikor</th><th>Hol</th><th>Megjegyzés</th><th></th></tr></thead><tbody>${myReps.map((r) => reportRow(D, r, false)).join('')}</tbody></table></div>` : '<p class="muted">Nem jelzett hibát.</p>', openReps > 0)}
+      <div class="adm-danger"><span class="muted small">A tanuló törlése a haladását, a tesztjeit, a hibajelzéseit és a beküldött vizsgáit is törli.</span><button class="btn btn-sm btn-ghost" id="admDel" type="button">Tanuló törlése</button></div>`);
+
+    $$('.adm-kpi[href^="#sec-"]', app).forEach((a) => a.addEventListener('click', (e) => {
+      e.preventDefault(); const d = $(a.getAttribute('href'), app); if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }));
     bindReports(app);
     $$('.dl', app).forEach((b) => b.addEventListener('click', async () => {
       try { const url = await C.admin.fileUrl(b.dataset.path); window.location.href = url; }
@@ -384,7 +463,7 @@
       } catch (ex) { $('.rv-err', f).textContent = 'Mentés nem sikerült: ' + (ex.message || ex); }
     }));
     $('#admDel', app).addEventListener('click', async () => {
-      if (!confirm(`Biztosan törlöd: ${username}? A haladása és a beküldött vizsgái is törlődnek, és ez nem vonható vissza.`)) return;
+      if (!confirm(`Biztosan törlöd: ${username}? A haladása, a tesztjei, a hibajelzései és a beküldött vizsgái is törlődnek, és ez nem vonható vissza.`)) return;
       try { await C.admin.removeLearner(username); location.hash = '#/admin'; }
       catch (ex) { ui().toast('A törlés nem sikerült'); }
     });
