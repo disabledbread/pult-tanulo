@@ -15,7 +15,7 @@
       { id: 'prog', name: 'Programozás', sub: 'Groupok és cue-k' },
       { id: 'ml', name: 'Moving lightok', sub: 'Mozgófejek hozzáadása és vezérlése' },
       { id: 'preset', name: 'Presetek és lejátszás', sub: 'Presetek, második sequence, executorok' },
-      { id: 'extra', name: 'Extrák', sub: 'Effektek, offset, direkt kapcsoló — nem számít bele a %-ba', extra: true }
+      { id: 'extra', name: 'Extrák', sub: 'Effektek, offset, direkt kapcsoló, Toggle, Layout, Timecode, MIDI — nem számít bele a %-ba', extra: true }
     ]
   });
 

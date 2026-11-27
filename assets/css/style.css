@@ -388,6 +388,11 @@ figure { margin: 0; }
 .finish p { margin: 2px 0 0; color: var(--text-2); font-size: 14px; }
 .finish b { display: flex; align-items: center; gap: 6px; font-size: 15.5px; }
 .finish b svg { color: var(--green); width: 18px; height: 18px; }
+.finish:not(.is-done) { border-color: var(--gold); }
+.finish-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-finish { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; padding: 11px 18px; }
+.btn-finish svg { width: 18px; height: 18px; }
+@media (max-width: 560px) { .btn-finish { width: 100%; justify-content: center; } }
 .next { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .next a { display: block; padding: 10px 12px; background: #000; border: 1px solid var(--gold-dim); border-radius: var(--r); color: var(--text); }
 .next a:hover { border-color: var(--ma); text-decoration: none; }

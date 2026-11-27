@@ -48,11 +48,16 @@
   g('Priority', 'prioritás', 'Ha két executor ugyanazt a lámpát vezérli, a magasabb prioritású nyer.', ['14']);
   g('Rate', 'sebesség-szorzó', 'Rate faderrel a cue-idők gyorsíthatók/lassíthatók anélkül, hogy a tárolt idők változnának.', ['14']);
   g('MAtricks', 'kijelölés-trükkök', 'Eszköz, amivel egy kijelölést szétbontasz: pl. minden második lámpa, blokkok, szárnyak (tükrözés középről). Effekteknél nagyon hasznos.', []);
-  g('Layout View', 'színpadkép nézet', 'Ablak, ahol a lámpák a valós elhelyezésük szerint látszanak, és rájuk kattintva kijelölheted őket.', []);
+  g('Layout View', 'színpadkép nézet', 'Ablak, ahol a lámpák a valós elhelyezésük szerint látszanak, és rájuk kattintva kijelölheted őket.', ['19']);
   g('Effect', 'effekt', 'Magától ismétlődő változás: futófény, kör, színváltás. Az Effect Editorban rakod össze, az Effects poolba kerül, és cue-ba tárolható.', ['15']);
   g('Effect Editor', 'effekt-szerkesztő', 'Itt építed fel az effektet: Add → attribútum (pl. Dim, Position, MixColor), majd Form (Chase, Sin, Cos…), Speed, Low/High, Phase.', ['15']);
   g('Stomp', 'effekt leállítása', 'Leállítja a futó effektet a kijelölt lámpákon. Gombokkal: MA + At, majd Please. Cue-ba tárolva a következő jelben állítja le az effektet.', ['15']);
   g('Offset', 'eltolás', 'A patch-ben a Pan Offset / Tilt Offset ennyivel eltolja a lámpa kimenetét. Lámpacsere után így javítod az összes pozíciót egyszerre.', ['16']);
   g('DMX Profile', 'kimeneti görbe', 'Megmondja, melyik bemenő értékből milyen DMX érték menjen ki. A fixture type csatornájára teszed (Profile oszlop). Pl. direkt kapcsoló: 50% alatt 0, fölötte 100.', ['17']);
+  g('Shutter', 'zár / strobe', 'A mozgófej fényzárja. A Beam oldalon a Shutter encoderrel nyitod, zárod vagy villogtatod (Strobe). Dimmer csatornát nem strobozunk.', ['15']);
+  g('Toggle', 'be-ki kapcsoló gomb', 'Executor gomb funkció: egy nyomás be, még egy ki. Assign menüben állítod be. Pl. DIM gomb, munkafény.', ['18']);
+  g('Timecode', 'időkód', 'Óra (óra:perc:mp.képkocka), amit a hangosító küld a zenével. Felveszed rá a Go-kat, és a pult pontosan a zenére hívja a cue-kat.', ['20']);
+  g('MIDI Show Control', 'MSC', 'MIDI-parancsok (GO, STOP…) egy másik gépről, amik léptetik a pult cue-listáját. Setup → MIDI Show Control.', ['21']);
+  g('MIDI Remote', 'MIDI hang → gomb', 'Egy MIDI hang megnyom egy executor gombot. Setup → Remote Inputs Setup → MIDI Remotes.', ['21']);
   window.MA.glossary.sort((a, b) => a.term.localeCompare(b.term));
 })();

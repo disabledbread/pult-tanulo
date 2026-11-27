@@ -7,7 +7,8 @@ A lépéseket a **grandMA2 onPC**-ben kell megcsinálni — ez az oldal mellette
 
 ## Mi van benne
 - 15 lecke (00–14): show létrehozása, patch, ablakok és view-k, csatornák, groupok, cue-k, sequence szerkesztés, moving lightok, presetek, második sequence
-- 3 extra lecke (15–17, nem számít bele a %-ba): könnyű effektek az Effect Editorban (+ Stomp a következő cue-ban), Pan/Tilt offset lámpacsere után, „direkt kapcsoló” fixture type DMX Profile-lal
+- 7 extra lecke (15–21, nem számít bele a %-ba): könnyű effektek és strobe (+ Stomp a következő cue-ban), Pan/Tilt offset, „direkt kapcsoló” fixture type, Toggle gomb, Layout View, Timecode, MIDI
+- Minden lecke végén „Elvégeztem, mehet a következő” gomb (a lépésenkénti pipák nem kötelezők)
 - Minden lépésnél: a megnyomandó gombok + billentyűparancsok (onPC shortcut mód), és hogy mit kell látnod
 - Valódi onPC képernyőképek (grandMA2 onPC 3.9.63)
 - Rövid kvízek, „A színházban” tippek

@@ -1,7 +1,7 @@
 MA.lesson({
-  id: '15', part: 'extra', title: 'Könnyű effektek', en: 'Effects (Effect Editor)', min: 30,
-  lead: 'Az Effect Editorral magad rakod össze az effekteket: futófény a dimmereken, kör a mozgófejekkel, színváltás — és megtanulod, hogyan kerül cue-ba és hogyan veszed ki a következő cue-ban (Stomp).',
-  learn: ['Effects pool és Effect Editor', 'Dimmer chase (futófény)', 'Mozgás: kör a mozgófejekkel', 'Színváltás (szivárvány)', 'Effekt cue-ba tárolása', 'Effekt kivétele a következő cue-ban: Stomp'],
+  id: '15', part: 'extra', title: 'Könnyű effektek', en: 'Effects & Strobe', min: 35,
+  lead: 'Az Effect Editorral magad rakod össze az effekteket: futófény a dimmereken, kör a mozgófejekkel, színváltás, strobe a mozgófejeken — és megtanulod, hogyan kerül cue-ba és hogyan veszed ki a következő cue-ban (Stomp).',
+  learn: ['Effects pool és Effect Editor', 'Dimmer chase (futófény)', 'Mozgás: kör a mozgófejekkel', 'Színváltás (szivárvány)', 'Strobe a mozgófejek shutterével', 'Effekt cue-ba tárolása', 'Effekt kivétele a következő cue-ban: Stomp'],
   blocks: [
     { t: 'concept', tag: 'Alapfogalom', title: 'Mi az effekt?', text: ['Az **effekt** egy magától ismétlődő változás: a fényerő hullámzik, a lámpák egymás után villannak, a mozgófej kört ír le, a szín körbejár. Nem kell minden lépést külön cue-ba tenni — a pult számolja.', 'Az effekteket az **Effect Editorban** rakod össze (ez az effekt generátor), és az **Effects poolba** mented. Van kész effekt-könyvtár is ({{Load Predefined}}), de most magunk építjük fel, hogy értsd, miből áll.'] },
     { t: 'h', text: 'Előkészítés' },
@@ -20,6 +20,13 @@ MA.lesson({
     { t: 'h', text: 'Színváltás' },
     { t: 'step', title: 'MixColor effekt', text: 'Mac 700-asok kijelölve → jobb klikk egy üres effekt gombra → {{Add}} → {{MixColor}} → {{Confirm}}.', see: 'Három sor: COLORRGB1, 2, 3 (piros, zöld, kék).' },
     { t: 'step', title: 'Csúsztasd el a színeket', text: 'Görgess jobbra a **Phase** oszlopig. Jobb klikk a cellákra, és írd be: piros **0**, zöld **120**, kék **240**. Így a lámpák együtt végigmennek a szivárványon.', shot: 'fx-color' },
+    { t: 'h', text: 'Strobe (villogás) a mozgófejeken' },
+    { t: 'concept', tag: 'Fontos', title: 'A strobe nem az Effect Editorban van', text: ['A mozgófejeknek (pl. Mac 700) saját **shuttere** van, ami magától tud villogni. Ezt a **Beam** oldalon, a **Shutter** encoderrel állítod — nem az Effect Editorban.', '**Dimmer csatornát nem strobozunk!** A sima lámpák izzója és a dimmer nem erre való. Strobe csak olyan lámpán, aminek shuttere van.'] },
+    { t: 'step', title: 'Mozgófejek 100%-on', keys: 'Fixture 1 1 1 Thru 1 3 3 At 1 0 0 Please', text: 'A lámpák legyenek felhúzva, különben nem látszik a villogás.' },
+    { t: 'step', title: 'Beam oldal, Shutter', text: 'Fent az encoder-sorban kattints a {{Beam}} fülre. Az első encoder a **Shutter**. Kattints a **Shutter** feliratra: megnyílik a **Value for Shutter** ablak.', shot: 'st-shutter-window', see: 'Gombok: closed, open, max Strobe, min Strobe…, fent fülek: Strobe 100..1%, Pulse…' },
+    { t: 'step', title: 'Strobe be', text: 'Kattints a {{Strobe 100..1%}} fülre, majd: {{max Strobe}} = gyors, {{min Strobe}} = lassú. A köztes sebességhez tekerd a Shutter encodert.', shot: 'st-encoder-strobe', see: 'Az encoder felett: **max Strobe** (pirosan, mert a programmerben van).' },
+    { t: 'step', title: 'Strobe ki a következő cue-ban', text: 'A strobe is továbbkövet (tracking). A következő cue-ban jelöld ki ugyanazokat a lámpákat, nyisd meg ugyanezt az ablakot, és válaszd: {{open}}. Ez nem effekt, ezért itt **nem Stomp kell**, hanem a Shutter visszaállítása.' },
+    { t: 'tip', kind: 'theatre', title: 'Strobe az előadásban', text: 'Ha az előadásban strobe van, azt előre jelezni kell a közönségnek (fényérzékeny epilepszia). Próbán szólj, mielőtt elindítod.' },
     { t: 'h', text: 'Effekt cue-ba, és kivétel a következő cue-ban' },
     { t: 'concept', tag: 'Fontos', title: 'Miért kell Stomp?', text: ['Az effekt a cue-ban **továbbkövet** (tracking): ha a következő cue-ban nem mondod neki, hogy álljon le, tovább fut.', 'A **Stomp** leállítja a futó effektet a kijelölt lámpákon. A következő cue-ba **gombokkal** teszed bele: kijelölöd a lámpákat, **MA + At** (= Stomp), Please, Store.'] },
     { t: 'step', title: 'Cue 1: az effekt', keys: 'Store Exec 4 Please', text: 'Jelöld ki a dimmereket ([[Group 6 Please]]), kattints a chase effekt gombjára (elindul), majd tárold egy **üres executorra**, pl. a 4-esre. Konzolon: Store, majd a 4-es executor gombja.', see: 'Új sequence a 4-es executoron, benne Cue 1.' },
@@ -28,10 +35,11 @@ MA.lesson({
     { t: 'step', title: 'Tárold a 4-esre', keys: 'Store Exec 4 Please', text: 'Felugrik a tárolás ablak — válaszd: {{Create Second Cue}}. Utána Clear.', shot: 'fx-two-cues', see: 'Két cue a 4-es sequence-ben: Cue 1 = fut az effekt, Cue 2 = leáll.' },
     { t: 'step', title: 'Próbáld ki', text: 'A 4-es executoron **Go**: fut az effekt. Még egy **Go**: megáll.' },
     { t: 'tip', kind: 'theatre', title: 'A színházban', text: 'Élesben az effektet mindig a Sequence-ből indítsd és állítsd le (cue-val), ne a programmerből. Ha valami „beragad”, a Stomp-os cue a megoldás.' },
-    { t: 'checkpoint', items: ['Van egy chase, egy kör és egy színváltó effekted a poolban.', 'Cue 1-ben fut az effekt, cue 2-ben Stomp-pal leáll.', 'A programmer üres.'] },
+    { t: 'checkpoint', items: ['Van egy chase, egy kör és egy színváltó effekted a poolban.', 'A Mac 700-asokon be- és ki tudod kapcsolni a strobe-ot (Shutter).', 'Cue 1-ben fut az effekt, cue 2-ben Stomp-pal leáll.', 'A programmer üres.'] },
     { t: 'quiz', items: [
       { q: 'Mit csinálj, mielőtt új effektet adsz hozzá?', a: ['Jelöld ki a lámpákat', 'Ments showt', 'Semmit'], ok: 0, why: 'Az Effect Editor a kijelölésből tudja, kikre vonatkozik az effekt (QTY).' },
       { q: 'Mitől lesz a Pan + Tilt effektből kör?', a: ['A Tilt Cos, a Pan Sin', 'Mindkettő Chase', 'A Speed 0'], ok: 0, why: 'A Sin és a Cos negyed ütemmel el vannak csúszva, ettől kört ír le a fej.' },
+      { q: 'Hol kapcsolod be a strobe-ot egy Mac 700-on?', a: ['Beam oldal → Shutter → Strobe', 'Effect Editor → Dim → Chase', 'A dimmer csatornán'], ok: 0, why: 'A mozgófej saját shutterével villog. Dimmer csatornát nem strobozunk.' },
       { q: 'Hogyan állítod le az effektet a következő cue-ban?', a: ['Kijelölés → MA + At (Stomp) → Please → Store', 'Törlöd az effektet a poolból', 'Kikapcsolod a lámpát'], ok: 0, why: 'A Stomp leállítja a futó effektet; tárolva a cue-ban marad.' }
     ] }
   ]

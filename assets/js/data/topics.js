@@ -117,10 +117,40 @@
     'Próba a DMX sheetben: 40% → 0, 60% → 100.'
   ], [['17']], 'direkt kapcsoló non dim nondim switch dmx profile fixture type relé');
 
+  t('strobe', 'spark', 'Strobe a mozgófejeken', 'Beam · Shutter', 'Villogás a lámpa saját shutterével — nem effekt.', [
+    'Mozgófejek kijelölve, 100%-on.',
+    'Encoder-sor: {{Beam}} → kattints a **Shutter** feliratra.',
+    '{{Strobe 100..1%}} fül → {{max Strobe}} (gyors) / {{min Strobe}} (lassú).',
+    'Leállítás a következő cue-ban: ugyanitt {{open}}. Dimmer csatornát nem strobozunk!'
+  ], [['15']], 'strobe strobi villogás shutter beam');
+
+  t('toggle', 'sliders', 'Toggle gomb (be-ki)', 'Assign · Select Function · Toggle', 'Egy nyomás be, még egy ki — pl. DIM gomb, munkafény.', [
+    'Fényállapot beállítása, [[Store]] → üres gomb (pl. 201).',
+    '[[Assign]] → a gomb → a bal oldali **Go** mező → {{Toggle}}.',
+    '{{Label}} → név (pl. `DIM`) → sárga X.'
+  ], [['18']], 'toggle gomb kapcsoló dim munkafény assign');
+
+  t('layout', 'grid', 'Layout View', 'Layout Pool · Arrange', 'A lámpák a valós helyükön — kattintással kijelölöd őket.', [
+    'Lámpák kijelölve → [[Store]] → Layouts pool gomb.',
+    'Layout View: {{Setup}} → {{Arrange}} → {{Rectangle}} → Columns / Interval → {{Apply}}.',
+    'Kilépés: {{Setup}}, majd {{Zoom to Fit}}.'
+  ], [['19']], 'layout view elrendezés térkép arrange rectangle');
+
+  t('timecode', 'clock', 'Timecode felvétel', 'Timecode Pool · Record', 'A hangosító timecode-jára felveszed a Go-kat.', [
+    'Timecode pool → jobb klikk egy gombra → szerkesztő.',
+    'Sárga gomb → Timecode Options → **Slot** (gyakorláshoz {{Intern}}).',
+    '● Record → a megfelelő pillanatokban **Go** → ■ Stop → |◀ vissza.',
+    'Ellenőrzés: {{Text}} nézet. Lejátszás: ▶.'
+  ], [['20']], 'timecode smpte ltc mtc időkód hangosító felvétel');
+
+  t('midi', 'plug', 'MIDI beállítás', 'MIDI Show Control · MIDI Remotes', 'GO parancs vagy MIDI hang indítja a pultot.', [
+    'MSC: [[Setup]] → {{MIDI Show Control}} → **MSC In Mode**: {{MIDI}} vagy {{Ethernet}}.',
+    'MIDI hang → gomb: [[Setup]] → {{Remote Inputs Setup}} → {{MIDI Remotes}} → {{Add}}.',
+    'Note (pl. `60`) · Type {{Exec}} · Executor · Button {{Button 1}} · {{Enabled}}.'
+  ], [['21']], 'midi msc show control remote note hang');
+
   /* Bonus modules (planned) */
   MA.bonus = [
     { id: 'B1', title: 'Executorok és page-ek', en: 'Executors & Pages' },
-    { id: 'B3', title: 'Layout View és MAtricks', en: 'Layout View & MAtricks' },
-    { id: 'B4', title: 'Záró projekt: saját show', en: 'Final project' }
   ];
 })();

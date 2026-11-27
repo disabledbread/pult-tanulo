@@ -145,7 +145,7 @@
           </div></form>
         ${subs.map(subCard).join('')}`;
     }
-    app.innerHTML = head('Záróvizsga', esc(E.title), esc(E.intro)) + `<section class="wrap" style="padding-bottom:40px">
+    app.innerHTML = head('Záróvizsga', esc(E.title), md(E.intro)) + `<section class="wrap" style="padding-bottom:40px">
         ${E.draft ? '<div class="call warn"><span class="ci"></span><div><h4>Tervezet</h4><p>A feladatlista még nem végleges — az oktató hamarosan pontosítja.</p></div></div>' : ''}
         <div class="part-head"><h3>Feladatok</h3><span>${E.tasks.length} feladat</span></div>
         <div class="win exam-box"><div class="win-body">${tasks}</div></div>

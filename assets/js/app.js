@@ -230,9 +230,10 @@
       $('#lcount').textContent = `${p.n}/${p.total} lépés`;
       $('#lbar').style.width = Math.round(p.pct * 100) + '%';
       const done = MA.store.isDone(l.id) || p.pct === 1;
+      $('#finish').classList.toggle('is-done', done);
       $('#finish').innerHTML = done
-        ? `<div><b>${icon.check} Lecke kész!</b><p>Szép munka. Ha valamit elfelejtesz, a Témakörök oldalon gyorsan visszanézheted.</p></div><button class="btn btn-ghost btn-sm" id="undoDone">Újrakezdem</button>`
-        : `<div><b>Végeztél a leckével?</b><p>${p.n} / ${p.total} lépés kipipálva.</p></div><button class="btn btn-primary" id="markDone">Megjelölöm késznek</button>`;
+        ? `<div><b>${icon.check} Lecke kész!</b><p>Szép munka. Ha valamit elfelejtesz, a Témakörök oldalon gyorsan visszanézheted.</p></div><div class="finish-btns"><button class="btn btn-ghost btn-sm" id="undoDone">Újrakezdem</button>${next ? `<a class="btn btn-primary" href="#/lecke/${next.id}">Következő lecke ›</a>` : `<a class="btn btn-primary" href="#/tanfolyam">Vissza a tanfolyamhoz</a>`}</div>`
+        : `<div><b>Megcsináltad az onPC-ben?</b><p>Nem kell minden lépést egyesével kipipálni — ha végigcsináltad, nyomd meg a gombot.</p></div><button class="btn btn-primary btn-finish" id="markDone">${icon.check} ${next ? 'Elvégeztem, mehet a következő ›' : 'Elvégeztem'}</button>`;
       updateNav();
     };
     refresh();
@@ -259,7 +260,7 @@
         }
         return;
       }
-      if (e.target.closest('#markDone')) { MA.stepIds(l).forEach((s) => MA.store.setStep(l.id, s, true)); MA.store.setDone(l.id, true); if (next) MA.store.setPos(next.id, MA.stepIds(next)[0]); $$('.step').forEach((s) => { s.classList.add('done'); const b = $('.check', s); b.setAttribute('aria-pressed', true); $('span', b).textContent = 'Kész'; }); $$('.l-toc a[data-target^="step-"]').forEach((a) => a.classList.add('done')); refresh(); toast('Lecke kész'); return; }
+      if (e.target.closest('#markDone')) { MA.stepIds(l).forEach((s) => MA.store.setStep(l.id, s, true)); MA.store.setDone(l.id, true); if (next) MA.store.setPos(next.id, MA.stepIds(next)[0]); $$('.step').forEach((s) => { s.classList.add('done'); const b = $('.check', s); b.setAttribute('aria-pressed', true); $('span', b).textContent = 'Kész'; }); $$('.l-toc a[data-target^="step-"]').forEach((a) => a.classList.add('done')); refresh(); toast('Lecke kész'); if (next) setTimeout(() => { location.hash = '#/lecke/' + next.id; }, 600); return; }
       if (e.target.closest('#undoDone')) { MA.stepIds(l).forEach((s) => MA.store.setStep(l.id, s, false)); MA.store.setDone(l.id, false); $$('.step').forEach((s) => { s.classList.remove('done'); const b = $('.check', s); b.setAttribute('aria-pressed', false); $('span', b).textContent = 'Megcsináltam'; }); $$('.l-toc a').forEach((a) => a.classList.remove('done')); refresh(); return; }
       const qo = e.target.closest('.qo');
       if (qo && !qo.disabled) {
